@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/recurring_deposit"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/FISchema/recurring_deposit ../FISchema/recurring_deposit.xsd"
+    linkedAccRef="" maskedAccNumber="" version="1.1" type="recurring_deposit">
+    <Profile>
+        <Holders type="JOINT">
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED" 
+                email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+        </Holders>
+    </Profile>
+    <Summary accountType="FIXED" openingDate="" branch="" ifsc="" maturityAmount="10.0"
+        maturityDate="2004-04-12" description="" interestPayout="HALF-YEARLY" interestRate=""
+        principalAmount="" tenureDays="" tenureMonths="" tenureYears="" recurringAmount=""
+        recurringDepositDay="" interestComputation="COMPOUND" compoundingFrequency="HALF-YEARLY"
+        interestPeriodicPayoutAmount="" interestOnMaturity="" currentValue=""/>
+
+
+    <Transactions startDate="2004-04-12" endDate="2004-04-12">
+        <Transaction txnId="" amount="" narration="" type="TDS" mode="ATM" balance=""
+            transactionDateTime="2004-04-12T13:20:00-05:00" valueDate="2004-04-12T13:20:00-05:00"
+            reference=""/>
+    </Transactions>
+</Account>

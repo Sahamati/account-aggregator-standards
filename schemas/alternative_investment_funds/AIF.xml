@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/aif"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://api.rebit.org.in/FISchema/aif ../FISchema/aif.xsd" linkedAccRef=""
+	maskedAccNumber="" version="1.0" type="aif">
+	<Profile>
+		<Holders>
+			<Holder name="" pan="AAAPL1234C" dob="2002-09-24" mobile="91729391923"
+				nominee="NOT-REGISTERED" email="qw@gmail.com" dematId="" ckycCompliance="true"/>
+		</Holders>
+
+	</Profile>
+	<Summary totalNumUnitsIssued="20" investmentValue="10.0" currentValue="20.0">
+		<Investment>
+
+			<Holdings>
+				<Holding issuerName="" typeOfSecurity="LISTED-EQUITY" valuationMethodology=""
+					purchaseDate="2002-09-24" purchasePrice="20.0" lastValuationDate="2002-09-24"
+					mtmOnLastValuation="200" holdingPeriod="" description=""/>
+			</Holdings>
+
+		</Investment>
+
+
+	</Summary>
+
+	<Transactions startDate="2002-09-24" endDate="2002-09-24">
+		<Transaction txnId="" nameofAsset="" investmentDateTime="2004-04-12T13:20:00-05:00"
+			investmentValue="20.0" redemptionDate="2002-09-24" redemptionValue="23.0"
+			fundFeesPaymentDate="2002-09-24" fundFeesPaymentAmount="10.0"
+			reInvestmentDate="2002-09-24" reInvestmentValue="30.0" paymentInvestorDate="2002-09-24"
+			paymentInvestorAmount="40.0" taxPaidValue="20.0" taxPaidDate="2002-09-24" narration=""/>
+
+	</Transactions>
+
+</Account>

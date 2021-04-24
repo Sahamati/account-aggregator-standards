@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/invit"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://api.rebit.org.in/FISchema/bonds ../FISchema/invit.xsd"
+	linkedAccRef="" maskedAccNumber="" version="1.0" type="invit">
+	<Profile>
+		<Holders>
+			<Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED"
+				dematId="" email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+		</Holders>
+	</Profile>
+
+
+
+	<Summary investmentValue="10.0" currentValue="20.0">
+		<Investment>
+
+			<Holdings>
+				<Holding isin="" issuerName="" investmentDateTime="2017-12-31T16:20:00-04:00"
+					rate="20.0" totalNumberUnits="10" lastClosingRate="234.09" description=""/>
+			</Holdings>
+
+		</Investment>
+	</Summary>
+	<Transactions startDate="2002-09-24" endDate="2002-09-24">
+		<Transaction txnId="" transactionDateTime="2017-12-31T16:20:00-04:00" isin="" issuerName=""
+			symbol="" exchange="" transactionDescription="" price="100" unitsType=""
+			numUnitsTransacted="10" tradeValue="230.05" totalCharge="200.0" otherCharges="10.0"/>
+
+	</Transactions>
+</Account>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/nps"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/FISchema/nps ../FISchema/nps.xsd" linkedAccRef=""
+    maskedAccNumber="" version="1.0" type="nps">
+    <Profile>
+        <Holders>
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED" pranId=""
+                email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+        </Holders>
+    </Profile>
+    <Summary currentValue="100" tier1NAVDate="2004-04-12" tier2NAVDate="2004-04-12"
+        debtAssetValue="100" equityAssetValue="100" otherAssetValue="100" openingDate="2004-04-12"
+        status="ACTIVE" tier1Status="ACTIVE" tier2Status="ACTIVE">
+        <SchemeChoices>
+            <SchemeChoice allocationPercent="" pfmId="" pfmName="" schemeId="" schemeName=""/>
+        </SchemeChoices>
+        <Holdings>
+            <Tier1Holdings schemePreferenceType="ACTIVE" freeUnits="20" investmentCost="200"
+                investmentValue="180">
+                <Tier1Holding amount="100" amountInTransition="20" blockedUnits="20" freeUnits="30"
+                    nav="" schemeId="" schemeName="" totalUnits="30" totalValueOfScheme="20"/>
+            </Tier1Holdings>
+            <Tier2Holdings schemePreferenceType="ACTIVE" freeUnits="10" investmentCost="100"
+                investmentValue="190">
+                <Tier2Holding amount="200" amountInTransition="30" blockedUnits="20" freeUnits="10"
+                    nav="" schemeId="" schemeName="" totalUnits="20" totalValueOfScheme="400"/>
+            </Tier2Holdings>
+        </Holdings>
+    </Summary>
+    <Transactions startDate="2004-04-12" endDate="2004-04-12">
+        <Tier1SchemeTransactions>
+            <Tier1SchemeTransaction txnId="" txnDate="2004-04-12" type="ADJUSTMENT" schemeId=""
+                schemeName="" narration="" allocationPercent="8" amount="100" nav="" units="10"
+                cumulativeUnits="14"/>
+        </Tier1SchemeTransactions>
+        <Tier2SchemeTransactions>
+            <Tier2SchemeTransaction txnId="" txnDate="2004-04-12" type="ADJUSTMENT" schemeId=""
+                schemeName="" narration="" allocationPercent="8" amount="100" nav="" units="10"
+                cumulativeUnits="8"/>
+        </Tier2SchemeTransactions>
+        <Tier1InvestmentTransactions>
+            <Tier1InvestmentTransaction txnId="" txnDate="" type="CONTRIBUTION" narration=""
+                subscriberContribution="200" employerContribution="200" totalContribution="400"/>
+        </Tier1InvestmentTransactions>
+        <Tier2InvestmentTransactions>
+            <Tier2InvestmentTransaction txnId="" txnDate="" type="CONTRIBUTION" narration=""
+                subscriberContribution="100" employerContribution="0" totalContribution="100"/>
+        </Tier2InvestmentTransactions>
+    </Transactions>
+</Account>

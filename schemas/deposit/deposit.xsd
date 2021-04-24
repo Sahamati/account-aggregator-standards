@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:aa="http://api.rebit.org.in/FISchema/deposit" elementFormDefault="qualified"
+  targetNamespace="http://api.rebit.org.in/FISchema/deposit"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+
+  <!--  -->
+  <xs:simpleType name="AccountType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SAVINGS"/>
+      <xs:enumeration value="CURRENT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingNominee">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REGISTERED"/>
+      <xs:enumeration value="NOT-REGISTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="version">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="2.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldersType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SINGLE"/>
+      <xs:enumeration value="JOINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SummaryIfsc">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0][0-9][0-9][0-9][0-9][0-9][0-9]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SummaryFacility">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OD"/>
+      <xs:enumeration value="CC"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TransactionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CREDIT"/>
+      <xs:enumeration value="DEBIT"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="StatusTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ACTIVE"/>
+      <xs:enumeration value="INACTIVE"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  
+  <xs:simpleType name="TransactionMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CASH"/>
+      <xs:enumeration value="ATM"/>
+      <xs:enumeration value="CARD"/>
+      <xs:enumeration value="UPI"/>
+      <xs:enumeration value="FT"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HolderAadhar">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderEmail">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^@]+@[^\.]+\..+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HolderPan">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9][0-9][a-zA-Z]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--  -->
+  <xs:element name="Account">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Profile" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Summary" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Transactions" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required" type="xs:string" fixed="deposit"/>
+      <xs:attribute name="maskedAccNumber" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required" type="aa:version"/>
+      <xs:attribute name="linkedAccRef" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="Profile">
+    <xs:annotation>
+      <xs:documentation>Basic Profile of the account which should include the Account Owner
+        information, maskedAccNumber and linkedAccRef numbers, type of account specific to the FI
+        type and any other generic details as might be pertinent for the specified FI type.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holders"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Summary">
+    <xs:annotation>
+      <xs:documentation>The value of the account, term of the deposits if relevant and any other
+        data that summarizes the funds in the account. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Pending"/>
+      </xs:sequence>
+      <xs:attribute name="currentBalance" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">Available Balance.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="currency" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Currency in which transaction taken place.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="exchgeRate" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Currency conversion exchange rate for the day.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="balanceDateTime" use="required" type="xs:dateTimeStamp">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Date and time stamp for which current balance recorded.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      
+      <xs:attribute name="type" use="required" type="aa:AccountType">
+        <xs:annotation>
+          <xs:documentation> Type of account whether is saving or current </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="branch" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">Location of branch where investment was made</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="facility" use="required" type="aa:SummaryFacility">
+        <xs:annotation>
+          <xs:documentation> Additional facility like Overdraft or Sweep In applicable for the given account. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ifscCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">IFSC code of the issued bank
+            branch</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="micrCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>MICR code is uniquely identifies a bank and a branch participating
+            in an ECS.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="openingDate" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Opening date of the deposit account</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="currentODLimit" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">The portion of the sanctioned limit that is available to be drawn, as of this point in time</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="drawingLimit" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Sanctioned limit (overall limit given by the bank, on the OD/CC facility). </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="status" use="required" type="aa:StatusTypes">
+        <xs:annotation>
+          <xs:documentation>
+             An account status with either active or inactive. An inactive account includes the dormant, inactive, or closed account.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holders">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holder"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required" type="aa:HoldersType">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Type of account held by an individual whether its single or jointly operated.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Holder">
+    <xs:annotation>
+      <xs:documentation>Personal details of the deposit account holder</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Name of primary account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dob" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> date of birth of account holder</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mobile" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Primary mobile number of account holder. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nominee" use="required" type="aa:HoldingNominee">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Status of nominee registred with the account.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="landline" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Landline number of account holder.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="address" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">  Address of account holder.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Email ID of primary account holder.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> PAN number of primary account holder.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> KYC status whether its completed or pending </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transactions">
+    <xs:annotation>
+      <xs:documentation>Details of all transactions that have been posted in an account. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Transaction"/>
+      </xs:sequence>
+      <xs:attribute name="startDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">Start date of transaction or period for which details are require. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">End date of transaction or period for which details are require.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transaction">
+    <xs:complexType>
+      <xs:attribute name="type" use="required" type="aa:TransactionType">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Type of account transaction either debit or credit</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mode" use="required" type="aa:TransactionMode">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Mode of investment captured whether online/demat or physical form.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Amount of transaction.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="currentBalance" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">Available balance.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="transactionTimestamp" use="required" type="xs:dateTimeStamp">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">Transaction date time stamp for particular record when transaction taken place</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="valueDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> Unique id of the transaction</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">Nararation is additional details in form of decription of remark associated with investment.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="reference" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">The cheque or reference no for the given transaction.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Pending">
+    <xs:complexType>
+      <xs:attribute name="transactionType" type="aa:TransactionType">
+        <xs:annotation>
+          <xs:documentation xml:lang="en"> The amount invested or to be invested in deposits such as Fixed or Recurring.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation xml:lang="en">Pending amount</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

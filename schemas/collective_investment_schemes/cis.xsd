@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:aa="http://api.rebit.org.in/FISchema/cis" elementFormDefault="qualified"
+  targetNamespace="http://api.rebit.org.in/FISchema/cis"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+  <!--  -->
+
+  <xs:simpleType name="version">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="2.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingEmail">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^@]+@[^\.]+\..+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingPan">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9][0-9][a-zA-Z]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HoldersTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SOLE"/>
+      <xs:enumeration value="JOINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TransactionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AMALGAMATION"/>
+      <xs:enumeration value="BONUS"/>
+      <xs:enumeration value=" BUY-BACK"/>
+      <xs:enumeration value="CAPITAL-REDUCTION_or_CONSOLIDATION-OF-SHARES"/>
+      <xs:enumeration value="CONVERSION-OF-DEBENTURES-INTO-SHARES"/>
+      <xs:enumeration value="DEMERGER"/>
+      <xs:enumeration value="DIVIDEND"/>
+      <xs:enumeration value="OPEN-OFFER"/>
+      <xs:enumeration value="RIGHTS-ISSUE"/>
+      <xs:enumeration value="STOCK-SPLIT"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+    
+  </xs:simpleType>
+  <xs:simpleType name="HoldingStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INDIVIDUAL"/>
+      <xs:enumeration value="MINOR"/>
+      <xs:enumeration value="HUF"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingSubtype">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ANY-ONE-OR-SURVIVOR"/>
+      <xs:enumeration value="EITHER-OR-SURVIVOR"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HoldingMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEMAT"/>
+      <xs:enumeration value="PHYSICAL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingNominee">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REGISTERED"/>
+      <xs:enumeration value="NOT-REGISTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="DividendType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INTERIM-DIVIDENT"/>
+      <xs:enumeration value="FINAL-DIVIDENT"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <!--  -->
+  <xs:element name="Account">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Profile" minOccurs="0"/>
+        <xs:element ref="aa:Summary"/>
+        <xs:element ref="aa:Transactions" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="linkedAccRef" use="required" type="xs:string"/>
+      <xs:attribute name="maskedAccNumber" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required" type="aa:version"/>
+      <xs:attribute name="type" use="required" type="xs:string" fixed="cis"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Profile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holders"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Summary">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Investment"/>
+      </xs:sequence>
+      <xs:attribute name="investmentValue" use="required" type="xs:float"/>
+      <xs:attribute name="currentValue" use="required" type="xs:float" />
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="Investment">
+    <xs:complexType>
+      
+      <xs:sequence>
+        <xs:element ref="aa:Holdings"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holdings">
+    <xs:complexType>
+      
+      <xs:sequence>
+        <xs:element ref="aa:Holding"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holding">
+    <xs:complexType>
+      <xs:attribute name="isin" use="required" type="xs:string"/>
+      <xs:attribute name="ucc" use="required" type="xs:string"/>
+      <xs:attribute name="folioNo" use="required" type="xs:string"/>
+      <xs:attribute name="mode" use="required" type="aa:HoldingMode" />
+      <xs:attribute name="units" use="required" type="xs:float"/>
+      <xs:attribute name="closingUnits" use="required" type="xs:float"/>
+      <xs:attribute name="rate" use="required" type="xs:float"/>
+      <xs:attribute name="nav" use="required" type="xs:float"/>
+    </xs:complexType>
+  </xs:element>
+  
+  
+  <xs:element name="Holders">
+    <xs:complexType>
+
+      <xs:sequence>
+        <xs:element ref="aa:Holder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+
+
+
+  <xs:element name="Holder">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string"/>
+      <xs:attribute name="dob" use="required" type="xs:date"/>
+      <xs:attribute name="mobile" use="required" type="xs:string"/>
+      <xs:attribute name="address" type="xs:string"/>
+      <xs:attribute name="landline" type="xs:string"/>
+      <xs:attribute name="email" use="required" type="aa:HoldingEmail"/>
+      <xs:attribute name="dematId" use="required" type="xs:string"/>
+      <xs:attribute name="pan" use="required" type="aa:HoldingPan"/>
+      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean"/>
+      <xs:attribute name="nominee" use="required" type="aa:HoldingNominee"/>
+      
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Transactions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Transaction"/>
+      </xs:sequence>
+      <xs:attribute name="endDate" use="required" type="xs:date"/>
+      <xs:attribute name="startDate" use="required" type="xs:date"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string"/>
+      <xs:attribute name="transactionDateTime" use="required" type="xs:dateTime"/>
+      <xs:attribute name="schemeCode" use="required" type="xs:string"/>
+      <xs:attribute name="isin" use="required" type="xs:string"/>
+      <xs:attribute name="dividendType" use="required" type="aa:DividendType"/>
+      <xs:attribute name="ucc" use="required" type="xs:string"/>
+      <xs:attribute name="amount" use="required" type="xs:float"/>
+      <xs:attribute name="closingUnits" use="required" type="xs:float"/>
+      <xs:attribute name="nav" use="required" type="xs:float"/>
+      <xs:attribute name="navDate" use="required" type="xs:date"/>
+      <xs:attribute name="type" use="required" type="aa:TransactionType"/>
+      <xs:attribute name="orderDate" use="required" type="xs:date"/>
+      <xs:attribute name="executionDate" use="required" type="xs:date"/>
+      <xs:attribute name="mode" use="required" type="aa:HoldingMode"/>
+      <xs:attribute name="otherTaxes" use="optional" type="xs:float"/>
+      <xs:attribute name=" narration" use="optional" type="xs:string"/>
+     
+
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

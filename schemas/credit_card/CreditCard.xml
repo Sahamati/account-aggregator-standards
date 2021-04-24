@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/others/others_creditcard"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/others/others_creditcard ../others/others_creditcard.xsd"
+    linkedAccRef="" maskedAccNumber="" version="1.0" type="credit_card">
+    <Profile>
+        <Holders>
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED" 
+                email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true">
+                <Cards>
+                    <Card cardType="RUPAY" primary="YES" issuedDate="2004-04-12" maskedCardNumber=""/>
+                </Cards>
+            </Holder>
+        </Holders>
+    </Profile>
+    <Summary currentDue="3000" lastStatementDate="2004-04-12" dueDate="2004-04-12"
+        previousDueAmount="100" totalDueAmount="2000" minDueAmount="200" creditLimit="3000"
+        cashLimit="400" availableCredit="3000" loyaltyPoints="20" financeCharges="50"/>
+    <Transactions startDate="2004-04-12" endDate="2004-04-12">
+        <Transaction txnId="" txnType="DEBIT" txnDate="2004-04-12" amount="100"
+            valueDate="2004-04-12" narration="" statementDate="2004-04-12" mcc=""
+            maskedCardNumber=""/>
+    </Transactions>
+</Account>

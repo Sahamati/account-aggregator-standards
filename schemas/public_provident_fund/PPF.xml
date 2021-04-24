@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/ppf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/FISchema/ppf ../others/others_ppf.xsd"
+    linkedAccRef="" maskedAccNumber="" version="1.0" type="ppf">
+    <Profile>
+        <Holders type="JOINT">
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED" 
+                email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+        </Holders>
+    </Profile>
+    <Summary openingDate="2004-04-12" maturityDate="2004-04-12" ifscCode="" micrCode=""
+        branchAddr="" status="ACTIVE" currentBalance="100"/>
+    <Transactions startDate="2004-04-12" endDate="2004-04-12">
+        <Transaction txnId="" txnDate="2004-04-12" valueDate="2004-04-12" type="DEPOSIT"
+            amount="1000" balance="200" narration=""/>
+    </Transactions>
+</Account>

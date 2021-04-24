@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/debentures"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://api.rebit.org.in/FISchema/debentures ../FISchema/debentures.xsd"
+	linkedAccRef="" maskedAccNumber="" version="1.0" type="debentures">
+	<Profile>
+		<Holders>
+			<Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED" dematId=""
+				email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true" />
+		</Holders>
+	</Profile>
+
+	<Summary investmentValue="10.0" currentValue="20.0">
+		<Holdings>
+			<Holding isin="" units="56" faceValue="" coupon="" fixedIncomePortfolio="" symbol=""
+				issuerName="" description="" creditRating="" taxable="YES" issueDate="2002-09-24"
+				principalAmount="10" tenureDays="10" tenureMonths="" tenureYears="" yield="6"
+				maturityDate="2002-09-24" lastTradedRate="9" lastTradedDate="2002-09-24"/>
+		</Holdings>
+	</Summary>
+
+	<Transactions endDate="2002-09-24" startDate="2002-09-24">
+		<Transaction txnId="" isin="" transactionDateTime="2004-04-12T13:20:00-05:00" rate="5"
+			type="CLOSING" units="50" currency="" tradeValue="30" totalCharge="40" otherTaxes="10"/>
+	</Transactions>
+</Account>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/equities"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/FISchema/equities ../FISchema/equities.xsd"
+    linkedAccRef="" maskedAccNumber="" version="1.1" type="equities">
+    <Profile>
+        <Holders>
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED"
+                dematId="" email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+        </Holders>
+    </Profile>
+    <Summary investmentValue="10.0" currentValue="20.0">
+        <Investment>
+            <Holdings type="DEMAT">
+                <Holding issuerName="" isin="" units="" rate=""
+                    investmentDateTime="2004-04-12T13:20:00-05:00" lastTradedPrice="" description=""
+                />
+            </Holdings>
+        </Investment>
+
+    </Summary>
+    <Transactions endDate="2004-04-12" startDate="2004-04-12">
+        <Transaction txnId="" orderId="" isin="" companyName="" symbol="" exchange="BSE"
+            narration="" transactionDateTime="2004-04-12T13:20:00-05:00"
+            equityCategory="CURRENCY_DERIVATIVES" instrumentType="OPTIONS" optionType="CALL"
+            strikePrice="700" rate="" tradeValue="" shareHolderEquityType="" type="BUY" units=""
+            otherCharges="" totalCharge=""/>
+    </Transactions>
+</Account>

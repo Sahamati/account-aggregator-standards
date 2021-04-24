@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:aa="http://api.rebit.org.in/FISchema/nps" elementFormDefault="qualified"
+  targetNamespace="http://api.rebit.org.in/FISchema/nps"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+  <!--  -->
+  <xs:simpleType name="SummaryStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ACTIVE"/>
+      <xs:enumeration value="DEACTIVATED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="HoldingNominee">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REGISTERED"/>
+      <xs:enumeration value="NOT-REGISTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="version">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="2.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SummaryTier1Status">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ACTIVE"/>
+      <xs:enumeration value="DEACTIVATED"/>
+      <xs:enumeration value="FROZEN"/>
+    </xs:restriction>
+
+  </xs:simpleType>
+  <xs:simpleType name="SummaryTier1SchemePreferenceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AUTO"/>
+      <xs:enumeration value="ACTIVE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SummaryTier2Status">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ACTIVE"/>
+      <xs:enumeration value="FROZEN"/>
+      <xs:enumeration value="DEACTIVATED"/>
+      <xs:enumeration value="NA"/>
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:simpleType name="SummaryTier2SchemePreferenceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="AUTO"/>
+      <xs:enumeration value="ACTIVE"/>
+      <xs:enumeration value="NA"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TransactionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CONTRIBUTION"/>
+      <xs:enumeration value="BILLING"/>
+      <xs:enumeration value="WILDRAWAL_DUE_TO_SCHEME_PREFERENCE_CHANGE"/>
+      <xs:enumeration value="CONTRIBUTION_DUE_TO_SCHEME_CHANGE"/>
+      <xs:enumeration value="UNFREEZE_CONTRIBUTION"/>
+      <xs:enumeration value="SWITCH_OUT"/>
+      <xs:enumeration value="WITHDRAWAL"/>
+      <xs:enumeration value="ADJUSTMENT"/>
+      <xs:enumeration value="TRANSFER"/>
+      <xs:enumeration value="SWAVALAMBAN"/>
+      <xs:enumeration value="REMITTANCE"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="InvestmentTransactionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CONTRIBUTION"/>
+      <xs:enumeration value="UNFREEZE_CONTRIBUTION"/>
+      <xs:enumeration value="WITHDRAWAL"/>
+      <xs:enumeration value="SWAVALAMBAN_CONTRIBUTION"/>
+      <xs:enumeration value="REMITTANCE"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderAadhar">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderEmail">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^@]+@[^\.]+\..+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HolderPan">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9][0-9][a-zA-Z]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!--  -->
+  <xs:element name="Account">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Profile" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Summary" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Transactions" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="maskedAccNumber" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required" type="aa:version"/>
+      <xs:attribute name="linkedAccRef" use="required" type="xs:string"/>
+      <xs:attribute name="type" use="required" type="xs:string" fixed="nps"/>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="Profile">
+    <xs:annotation>
+      <xs:documentation>Basic Profile of the account which should include the Account Owner
+        information, maskedAccNumber and linkedAccRef numbers, type of account specific to the FI
+        type and any other generic details as might be pertinent for the specified FI type.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holders"/>
+      </xs:sequence>
+
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="Summary">
+    <xs:annotation>
+      <xs:documentation>The value of the account, term of the deposits if relevant and any other
+        data that summarizes the funds in the account. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:SchemeChoices"/>
+        <xs:element ref="aa:Holdings"/>
+      </xs:sequence>
+      <xs:attribute name="openingDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of account opening and intial investment made.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="currentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Current value of investment as on date. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="status" use="required" type="aa:SummaryStatus">
+        <xs:annotation>
+          <xs:documentation> Status of the account whther active, inactive, dormant or any other. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tier1Status" use="required" type="aa:SummaryTier1Status">
+        <xs:annotation>
+          <xs:documentation> Status of fund whether its active, inactive or dormant.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tier2NAVDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Net assets value of fund in which investment made as part of tier2 NPS investment.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tier2Status" use="required" type="aa:SummaryTier2Status">
+        <xs:annotation>
+          <xs:documentation> Status of fund whether its active, inactive or dormant.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tier1NAVDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Net assets value of fund in which investment made as part of tier1 NPS investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="debtAssetValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Amount or Value of investment made in debt instrument of NPS scheme. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="equityAssetValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Amount or Value of investment made in equity instrument of NPS scheme.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="otherAssetValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Amount or Value of investment made in other instrument of NPS scheme.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="Holders">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Holder">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of primary holder operating the account </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dob" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of birth of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mobile" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation> Primary mobile number of account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nominee" use="required" type="aa:HoldingNominee">
+        <xs:annotation>
+          <xs:documentation> Name of nominee associated with the account </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pranId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="landline" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Landline number of account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="address" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Address of account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+        <xs:annotation>
+          <xs:documentation> Email id of account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+        <xs:annotation>
+          <xs:documentation> PAN number of primary account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation> KYC status whether its completed or pending  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SchemeChoices">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:SchemeChoice"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SchemeChoice">
+    <xs:complexType>
+      <xs:attribute name="allocationPercent" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Seggragation and Percentage of units alloted in equity, debt and govt. funds  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pfmId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> ID of portfolio fund manager handling the account. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pfmName" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of portfolio fund manager handling the account </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> ID of scheme choosen by person for the investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeName" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name of scheme choosen by person for the investment.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holdings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Tier1Holdings"/>
+        <xs:element ref="aa:Tier2Holdings"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier1Holdings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Tier1Holding"/>
+      </xs:sequence>
+      <xs:attribute name="schemePreferenceType" use="required"
+        type="aa:SummaryTier1SchemePreferenceType">
+        <xs:annotation>
+          <xs:documentation> Preference or Percentage of investor selected for investment made in various security type  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="freeUnits" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> The number of units not under any transition  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="investmentCost" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment  in Tier 1 </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="investmentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier1Holding">
+    <xs:complexType>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment in Tier1.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amountInTransition" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> The number of units blocked to complete a transition (Scheme Change/Withdrawal/Shifting request is under progress).   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="blockedUnits" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Number of units which are blocked for specific period and not available for sale  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="freeUnits" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> The number of units not under any transition  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nav" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeName" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of scheme choosen by person for the investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> ID of scheme choosen by person for the investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="totalUnits" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Total number of units issued to investor in the fund opted  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="totalValueOfScheme" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Total combined and consolidated value of investment scheme in Tier 1.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier2Holdings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Tier2Holding"/>
+      </xs:sequence>
+      <xs:attribute name="schemePreferenceType" use="required"
+        type="aa:SummaryTier2SchemePreferenceType">
+        <xs:annotation>
+          <xs:documentation> Preference or Percentage of investor selected for investment made in various security type  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="freeUnits" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> The number of units not under any transition   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="investmentCost" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment  in Tier 1 </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="investmentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier2Holding">
+    <xs:complexType>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment in Tier 2 </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amountInTransition" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> The number of units blocked to complete a transition (Scheme Change/Withdrawal/Shifting request is under progress).  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="blockedUnits" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Number of units which are blocked for specific period and not available for sale. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="freeUnits" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> The number of units not under any transition  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nav" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeName" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of scheme choosen by person for the investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> ID of scheme choosen by person for the investment </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="totalUnits" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Total number of units issued to investor in the fund opted </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="totalValueOfScheme" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Total combined and consolidated value of investment scheme in Tier 2.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transactions">
+    <xs:annotation>
+      <xs:documentation>Details of all transactions that have been posted in an account.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Tier1SchemeTransactions"/>
+        <xs:element ref="aa:Tier2SchemeTransactions"/>
+        <xs:element ref="aa:Tier1InvestmentTransactions"/>
+        <xs:element ref="aa:Tier2InvestmentTransactions"/>
+      </xs:sequence>
+      <xs:attribute name="startDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Start date of investment since when it is applicable. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> End date of investment when tenure get complete  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier1SchemeTransactions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Tier1SchemeTransaction"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier1SchemeTransaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction ID recorded or captured for investment made </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Transaction date time stamp for particular record when investment taken place. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" use="required" type="aa:TransactionType">
+        <xs:annotation>
+          <xs:documentation>  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeName" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of scheme selected for the investment </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Scheme ID in which investment made in TIER 1 of NPS scheme </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Nararation is additional details in form of decription of remark associated with investment.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="allocationPercent" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Pencentage of Units which are alloted in the portfolio of investor </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> The transaction amount </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nav" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="units" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Units which are alloted in the portfolio of investor  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="cumulativeUnits" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation> Cummulative units alloted in the scheme of TIER 1 of NPS   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier2SchemeTransactions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Tier2SchemeTransaction"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier2SchemeTransaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction ID recorded or captured for investment made. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Transaction date time stamp for particular record when investment taken place. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" use="required" type="aa:TransactionType">
+        <xs:annotation>
+          <xs:documentation>  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeName" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of scheme selected for the investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Scheme ID in which investment made in TIER 2 of NPS scheme  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Nararation is additional details in form of decription of remark associated with investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="allocationPercent" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Pencentage of Units which are alloted in the portfolio of investor </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> The transaction amount </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nav" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="units" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Units which are alloted in the portfolio of investor </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="cumulativeUnits" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation> Cummulative units alloted in the scheme of TIER 2 of NPS  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier1InvestmentTransactions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Tier1InvestmentTransaction"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier1InvestmentTransaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction ID recorded or captured for investment made. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnDate" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction date time stamp for particular record when investment taken place. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" use="required" type="aa:InvestmentTransactionType">
+        <xs:annotation>
+          <xs:documentation> Type of transaction - contribution, adjustment, etc.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Nararation is additional details in form of decription of remark associated with investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="subscriberContribution" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Subscriber contribution in Tier1 scheme of NPS . </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="employerContribution" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Employer contribution in Tier1 scheme of NPS . </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="totalContribution" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Total contribution of subcriber and employer in Tier1 scheme of NPS. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier2InvestmentTransactions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Tier2InvestmentTransaction"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Tier2InvestmentTransaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction ID recorded or captured for investment made.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnDate" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction date time stamp for particular record when investment taken place. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" use="required" type="aa:InvestmentTransactionType">
+        <xs:annotation>
+          <xs:documentation> Type of transaction - contribution, adjustment, etc. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Nararation is additional details in form of decription of remark associated with investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="subscriberContribution" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Subscriber contribution in Tier2 scheme of NPS.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="employerContribution" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Employer contribution in Tier2 scheme of NPS.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="totalContribution" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Total contribution of subcriber and employer in Tier2 scheme of NPS. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

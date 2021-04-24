@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/cp"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/FISchema/cp ../FISchema/cp.xsd" linkedAccRef=""
+    maskedAccNumber="" version="1.0" type="cp">
+    <Profile>
+        <Holders>
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED"
+                dematId="" email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+        </Holders>
+    </Profile>
+
+
+    <Summary investmentValue="10.0" currentValue="20.0">
+        <Investment>
+            <Holdings>
+                <Holding investmentValue="200" currentValue="205" scheme="FIXED_INTEREST_RATE"
+                    isin="" units="9" faceValue="19" symbol="" description="" issuerName=""
+                    creditRating="" creditRatingAgency="" issueDate="2004-04-12"
+                    principalAmount="200" tenureYears="3" tenureMonths="36" tenureDays="120"
+                    maturityDate="2004-04-12" auctionDate="2004-04-12"/>
+            </Holdings>
+        </Investment>
+    </Summary>
+
+
+    <Transactions startDate="2004-04-12" endDate="2004-04-12">
+        <Transaction txnId=" " isin="" narration="" transactionDateTime="2004-04-12T13:20:00-05:00"
+            rate="3" type="BUY" units="12" currency="" tradeValue="23" totalCharge="34"
+            otherTaxes="2"/>
+    </Transactions>
+</Account>

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/reits"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://api.rebit.org.in/FISchema/reits ../FISchema/reit.xsd" linkedAccRef=""
+	maskedAccNumber="" version="1.0" type="reit">
+	<Profile>
+		<Holders type="JOINT">
+			<Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED"
+				dematId="" email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+		</Holders>
+	</Profile>
+
+
+	<Summary investmentValue="10.0" currentValue="20.0">
+		<Investment>
+			<Holdings>
+				<Holding isin="" issuerName="" investmentDateTime="2004-04-12T13:20:00-05:00"
+					rate="20.0" description="" totalNumberUnits="10" lastClosingRate="234.09"
+					nomineeStatus="REGISTERED"/>
+			</Holdings>
+		</Investment>
+	</Summary>
+
+	<Transactions endDate="2002-09-24" startDate="2002-09-24">
+		<Transaction txnId="" transactionDateTime="2004-04-12T13:20:00-05:00" isin="" issuerName=""
+			symbol="" exchange="" transactionDescription="" price="100" unitsType=""
+			numUnitsTransacted="10" tradeValue="230.05" totalCharge="200.0" otherCharges="10.0"
+			narration=""/>
+
+	</Transactions>
+</Account>

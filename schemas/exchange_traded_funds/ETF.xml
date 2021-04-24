@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/etf"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://api.rebit.org.in/FISchema/etf ../FISchema/etf.xsd" linkedAccRef=""
+	maskedAccNumber="" version="1.0" type="etf">
+	<Profile>
+		<Holders>
+			<Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED"
+				dematId="" email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+		</Holders>
+
+	</Profile>
+	<Summary investmentValue="200" currentValue="250">
+
+		<Investment>
+
+			<Holdings>
+				<Holding folioNo="" dematId="" schemeName="" dpId="" units="30" isin="" mode="DEMAT"
+					rate="20" nav="" lastNavDate="2004-04-12" symbol="" description=""/>
+			</Holdings>
+
+		</Investment>
+
+	</Summary>
+	<Transactions startDate="2002-09-24" endDate="2002-09-24">
+		<Transaction txnId="" isin="" transactionDateTime="2004-04-12T13:20:00-05:00" units="20"
+			amount="30.0" schemeName="" dpId="" schemeMinLotSize="" faceValueofUnits="40.0" nav=""
+			type="BUY" orderDate="2002-09-24" executionDate="2002-09-24" mode="DEMAT" narration=""
+			brokerCode=""/>
+	</Transactions>
+</Account>

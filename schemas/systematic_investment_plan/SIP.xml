@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/sip"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/FISchema/sip ../FISchema/sip.xsd" linkedAccRef=""
+    maskedAccNumber="" version="1.0" type="sip">
+
+    <Profile>
+        <Holders type="JOINT">
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED"
+                dematId="" email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+        </Holders>
+    </Profile>
+    <Summary folioNo="" investmentValue="100" currentValue="80">
+        <Holdings>
+            <Holding amc="" registrar="" scheme="" isin="" ucc="" amfiCode="" folioNo=""
+                holdingType="SOLE" holder1Name="" holder2Name="" nominee="OTHERS"
+                email="qw@gmail.com" units="10" nav="" value="20" devidentType="" amount="3000"
+                frequency="10" instalmentDay="45" pendingInstalments="450" completeInstalments="500"
+                lastInstalmentDate="2004-04-12" nextInstalmentDate="2004-04-12"
+                creationDate="2004-04-12" modificationDate="2004-04-12" ceasedDate="2004-04-12"/>
+        </Holdings>
+        <Investments type="" issueDate="2004-04-12" maturityDate="2004-04-12">
+            <Investment type="" startDate="2004-04-12" endDate="2004-04-12"/>
+        </Investments>
+    </Summary>
+    <Transactions startDate="2004-04-12" endDate="2004-04-12">
+        <Transaction txnId="" txnDate="" amc="" scheme="" isin="" ucc="" amfiCode="" folioNo=""
+            type="BUY" narration="" units="" nav="" cost="600" stt="" amount="200"/>
+    </Transactions>
+</Account>

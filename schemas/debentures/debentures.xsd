@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:aa="http://api.rebit.org.in/FISchema/debentures" elementFormDefault="qualified"
+  targetNamespace="http://api.rebit.org.in/FISchema/debentures"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.0" vc:maxVersion="2.0">
+
+
+  <xs:simpleType name="SummaryTaxable">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="YES"/>
+      <xs:enumeration value="NO"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="version">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="2.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldersType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SINGLE"/>
+      <xs:enumeration value="JOINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderAadhar">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderEmail">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^@]+@[^\.]+\..+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HolderPan">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9][0-9][a-zA-Z]"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+
+  <xs:simpleType name="SummaryinterestComputation">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SIMPLE"/>
+      <xs:enumeration value="COMPOUND"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SummaryinterestCompoFrequency ">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MONTHLY"/>
+      <xs:enumeration value="QUARTERLY"/>
+      <xs:enumeration value="HALF-YEARLY"/>
+      <xs:enumeration value="YEARLY"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingNominee">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REGISTERED"/>
+      <xs:enumeration value="NOT-REGISTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SummaryInterestPayout">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MONTHLY"/>
+      <xs:enumeration value="QUARTERLY"/>
+      <xs:enumeration value="HALF-YEARLY"/>
+      <xs:enumeration value="YEARLY"/>
+      <xs:enumeration value="ON-Maturity"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TransactionTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OPENING"/>
+      <xs:enumeration value="INTEREST"/>
+      <xs:enumeration value="TDS"/>
+      <xs:enumeration value="INSTALLMENT"/>
+      <xs:enumeration value="CLOSING"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <!--  -->
+  <xs:element name="Account">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Profile" minOccurs="0"/>
+        <xs:element ref="aa:Summary" minOccurs="0"/>
+        <xs:element ref="aa:Transactions"/>
+      </xs:sequence>
+      <xs:attribute name="linkedAccRef" use="required" type="xs:string"/>
+      <xs:attribute name="maskedAccNumber" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required" type="aa:version"/>
+      <xs:attribute name="type" type="xs:string" fixed="debentures"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Profile">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="aa:Holders"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Summary">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element ref="aa:Holdings"/>
+      </xs:sequence>
+      <xs:attribute name="investmentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="currentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Current value of investment as on date  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holdings">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element ref="aa:Holding"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holding">
+    <xs:complexType>
+      <xs:attribute name="isin" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> International Securities Identification Number (ISIN) uniquely identifies a security.   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="units" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Units allotted in folio till date  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="faceValue" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Face value on which investment made in debentures   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="coupon" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Interest rate of the debenture  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="fixedIncomePortfolio" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="symbol" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Symbol of the securities in which investment made and hold by investor  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="issuerName" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of party who issued the debenture in which investment made  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="description" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Description or details of security in which investment made  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="creditRating" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Rating of the fund invested assigned by credit rating agencies   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="taxable" use="required" type="aa:SummaryTaxable">
+        <xs:annotation>
+          <xs:documentation> Status whether investment is taxable or not  </xs:documentation>
+        </xs:annotation>
+        
+      </xs:attribute>
+      <xs:attribute name="issueDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Issue date on which investment made in particular security  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="principalAmount" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tenureDays" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>  Days which are passed since investment made </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tenureMonths" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Months which are passed since investment made   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tenureYears" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Years which are passed since investment made </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="yield" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> The amount to be paid out to the debenture holder at the end of the term for which the CD was issued.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="maturityDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of maturity for investment   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lastTradedRate" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Last rate on which security traded in the open market  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lastTradedDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of secuirties on which last trade happened  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="Holders">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="aa:Holder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Holder">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of primary holder operating the account   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dob" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of birth of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mobile" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation>  Primary mobile number of account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nominee" use="required" type="aa:HoldingNominee">
+        <xs:annotation>
+          <xs:documentation> Name of nominee associated with the account  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dematId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Demat ID assigned or issued to investor   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="landline" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Landline of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="address" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Adderess of primary account holder   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+        <xs:annotation>
+          <xs:documentation> Email ID of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+        <xs:annotation>
+          <xs:documentation> PAN number of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation> KYC status whether its completed or pending  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transactions">
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="aa:Transaction"/>
+      </xs:sequence>
+      <xs:attribute name="startDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Start date of investment since when it is applicable  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      
+      <xs:attribute name="endDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> End date of investment when tenure get complete   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction ID recorded or captured for investment made  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isin" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> International Securities Identification Number (ISIN) uniquely identifies a security.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Nararation is additional details in form of decription of remark associated with investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="transactionDateTime" use="required" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation> Transaction date time stamp for particular record when investment taken place  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="rate" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Rate or net price on which investment made in security  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" use="required" type="aa:TransactionTypes">
+        <xs:annotation>
+          <xs:documentation> Type of transaction whether Buy/Sell, etc  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="units" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Units which are alloted in the portfolio of investor   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="currency" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Currency in which transaction taken place  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="tradeValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Trade value of investment as per market price  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="totalCharge" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Total charges includes finance charge, STT or other taxes/charge implied on investment   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="otherTaxes" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Additonal or any type of tax chareged on the investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

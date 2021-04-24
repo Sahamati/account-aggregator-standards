@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:aa="http://api.rebit.org.in/FISchema/ppf" elementFormDefault="qualified"
+  targetNamespace="http://api.rebit.org.in/FISchema/ppf"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.0" vc:maxVersion="1.1">
+
+  <!--  -->
+  <xs:simpleType name="HoldersType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SINGLE"/>
+      <xs:enumeration value="JOINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingNominee">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REGISTERED"/>
+      <xs:enumeration value="NOT-REGISTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="version">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="2.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderAadhar">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderEmail">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^@]+@[^\.]+\..+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HolderPan">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9][0-9][a-zA-Z]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="TransactionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEPOSIT"/>
+      <xs:enumeration value="WITHDRAWAL"/>
+      <xs:enumeration value="INTEREST"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="StatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ACTIVE"/>
+      <xs:enumeration value="INACTIVE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <!--  -->
+  <xs:element name="Account">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Profile" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Summary" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Transactions" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="maskedAccNumber" use="required" type="xs:string"/>
+      <xs:attribute name="linkedAccRef" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required" type="aa:version"/>
+      <xs:attribute name="type" use="required" type="xs:string" fixed="ppf"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Profile">
+    <xs:annotation>
+      <xs:documentation>Basic Profile of the account which should include the Account Owner
+        information, maskedAccNumber and linkedAccRef numbers, type of account specific to the FI
+        type and any other generic details as might be pertinent for the specified FI type.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holders"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Summary">
+    <xs:annotation>
+      <xs:documentation>The value of the account, term of the deposits if relevant and any other
+        data that summarizes the funds in the account. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="openingDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Opening date of PPF account </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="maturityDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of maturity for investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ifscCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> IFSC code of bank branch where investment was made </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="micrCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> MICR code of bank branch where investment was made </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="status" use="required" type="aa:StatusType">
+        <xs:annotation>
+          <xs:documentation> Status of PPF account hold  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="branchAddr" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Address of branch where investment was made </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="currentBalance" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Current available balance in PPF account.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holders">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holder"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required" type="aa:HoldersType">
+        <xs:annotation>
+          <xs:documentation>  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Holder">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of primary holder operating the account  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dob" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of birth of primary account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mobile" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation> Primary mobile number of account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nominee" use="required" type="aa:HoldingNominee">
+        <xs:annotation>
+          <xs:documentation> Name of nominee associated with the account </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="landline" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Lnadline number of account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="address" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Address of account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+        <xs:annotation>
+          <xs:documentation> Email ID of primary account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+        <xs:annotation>
+          <xs:documentation> PAN number of primary account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation> KYC status whether its completed or pending </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transactions">
+    <xs:annotation>
+      <xs:documentation>Details of all transactions that have been posted in an account.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Transaction"/>
+      </xs:sequence>
+      <xs:attribute name="startDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Start date of investment since when it is applicable </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> End date of investment when tenure get complete  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Transaction ID recorded or captured for investment made.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Transaction date time stamp for particular record when investment taken place. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="valueDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Value of PPF as on date </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" use="required" type="aa:TransactionType">
+        <xs:annotation>
+          <xs:documentation> Type of transaction - deposit, withdrawal, etc.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> The transaction amount  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="balance" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> The PPF account balance after the transaction is completed </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Nararation is additional details in form of decription of remark associated with investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

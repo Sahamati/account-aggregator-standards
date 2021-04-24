@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:aa="http://api.rebit.org.in/FISchema/mutual_funds" elementFormDefault="qualified"
+  targetNamespace="http://api.rebit.org.in/FISchema/mutual_funds"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+  <!--  -->
+  <xs:simpleType name="HolderEmail">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^@]+@[^\.]+\..+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="version">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="2.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderPan">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9][0-9][a-zA-Z]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HoldingType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SOLE"/>
+      <xs:enumeration value="JOINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TransactionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BUY"/>
+      <xs:enumeration value="SELL"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HoldingStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INDIVIDUAL"/>
+      <xs:enumeration value="MINOR"/>
+      <xs:enumeration value="HUF"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingSubtype">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ANY-ONE-OR-SURVIVOR"/>
+      <xs:enumeration value="EITHER-OR-SURVIVOR"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HoldingMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEMAT"/>
+      <xs:enumeration value="PHYSICAL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingNominee">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REGISTERED"/>
+      <xs:enumeration value="NOT-REGISTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:simpleType name="FundType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="EQUITY"/>
+      <xs:enumeration value="DEBT"/>
+      <xs:enumeration value="HYBRID"/>
+      <xs:enumeration value="SOLUTION_ORIENTED_SCHEMES"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SchemePlan">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DIRECT"/>
+      <xs:enumeration value="REGULAR"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SchemeOption">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REINVEST"/>
+      <xs:enumeration value="PAYOUT"/>
+      <xs:enumeration value="GROWTH_TYPE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SchemeTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="EQUITY_SCHEMES"/>
+      <xs:enumeration value="DEBT_SCHEMES"/>
+      <xs:enumeration value="HYBRID_SCHEMES"/>
+      <xs:enumeration value="SOLUTION_ORIENTED_SCHEMES"/>
+      <xs:enumeration value="OTHER_SCHEMES"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:simpleType name="SchemeCategory">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MULTI_CAP_FUND"/>
+      <xs:enumeration value="LARGE_CAP_FUND"/>
+      <xs:enumeration value="LARGE_and_MID_CAP_FUND"/>
+      <xs:enumeration value="MIDCAP_FUND"/>
+      <xs:enumeration value="SMALL_CAP_FUND"/>
+      <xs:enumeration value="DIVIDEND_YIELD_FUND"/>
+      <xs:enumeration value="VALUE_FUND"/>
+      <xs:enumeration value="CONTRA_FUND"/>
+      <xs:enumeration value="FOCUSED_FUND"/>
+      <xs:enumeration value="SECTORAL_OR_THEMATIC"/>
+      <xs:enumeration value="ELSS"/>
+      <xs:enumeration value="OVERNIGHT_FUND"/>
+      <xs:enumeration value="LIQUID_FUND"/>
+      <xs:enumeration value="ULTRA_SHORT_DURATION_FUND"/>
+      <xs:enumeration value="LOW_DURATION_FUND"/>
+      <xs:enumeration value="MONEY_MARKET_FUND"/>
+      <xs:enumeration value="SHORT_DURATION_FUND"/>
+      <xs:enumeration value="MEDIUM_DURATION_FUND"/>
+      <xs:enumeration value="MEDIUM_TO _LONG_DURATION_FUND"/>
+      <xs:enumeration value="LONG_DURATION_FUND"/>
+      <xs:enumeration value="DYNAMIC_BOND"/>
+      <xs:enumeration value="CORPORATE_BOND_FUND"/>
+      <xs:enumeration value="CREDIT_RISK_FUND"/>
+      <xs:enumeration value="BANKING_AND_PSU_FUND"/>
+      <xs:enumeration value="GILT_FUND"/>
+      <xs:enumeration value="GILT_FUND_WITH_10_YEAR_CONSTANT_DURATION"/>
+      <xs:enumeration value="FLOATER_FUND"/>
+      <xs:enumeration value="CONSERVATIVE_HYBRID_FUND"/>
+      <xs:enumeration value="BALANCED_HYBRID_FUND"/>
+      <xs:enumeration value="AGGRESSIVE_HYBRID_FUND"/>
+      <xs:enumeration value="DYNAMIC_ASSET_ALLOCATION_OR_BALANCED_ADVANTAGE"/>
+      <xs:enumeration value="MULTI_ASSET_ALLOCATION"/>
+      <xs:enumeration value="ARBITRAGE_FUND"/>
+      <xs:enumeration value="EQUITY_SAVINGS"/>
+      <xs:enumeration value="RETIREMENT_FUND"/>
+      <xs:enumeration value="CHILDREN’S_FUND"/>
+      <xs:enumeration value="INDEX_FUNDS_OR_ETFS"/>
+      <xs:enumeration value="FOFS_OVERSEAS_OR_DOMESTIC"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+
+  <!--  -->
+  <xs:element name="Account">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Profile" minOccurs="0"/>
+        <xs:element ref="aa:Summary" minOccurs="0"/>
+        <xs:element ref="aa:Transactions" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="linkedAccRef" use="required" type="xs:string"/>
+      <xs:attribute name="maskedAccNumber" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required" type="aa:version"/>
+      <xs:attribute name="type" use="required" type="xs:string" fixed="mutualfunds"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Profile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holders"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Summary">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Investment"/>
+      </xs:sequence>
+
+      <xs:attribute name="investmentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment.   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+      <xs:attribute name="currentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Current value of investment as on date.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Investment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holdings"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+
+  <xs:element name="Holders">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holdings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holding"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="Holder">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of primary holder operating the account.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dob" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of birth of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mobile" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation> Primary mobile number of account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nominee" use="required" type="aa:HoldingNominee">
+        <xs:annotation>
+          <xs:documentation> Name of nominee associated with the account.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dematId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Demat ID assigned or issued to investor  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="landline" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Landline number of account holder.   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="address" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>  Address of account holder.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+        <xs:annotation>
+          <xs:documentation> Email ID of primary account holder.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+        <xs:annotation>
+          <xs:documentation> PAN number of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation> KYC status whether its completed or pending.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Holding">
+    <xs:complexType>
+      <xs:attribute name="amc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name of asset management company associated with investment</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="registrar" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Trust or institution registering and maintaining the detailed records of the transactions of investors for the convenience of mutual fund houses. E.g. CAMS/KARVY</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Code of scheme choosen by person for the investment</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isin" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> International Securities Identification Number (ISIN) uniquely identifies a security. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ucc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Unique Client Code generated by Stock Exchanges.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amfiCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> AMFI code associated with investment made.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="folioNo" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Unique folio number associated with investment. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dividendType" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> May be Cash, Stock, Property, Scrip or Liquidating. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+      <xs:attribute name="FatcaStatus" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Whether the Mutual Fund is FATCA (Foreign Account Tax Compliance Act) compliant - Yes/No. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+
+      <xs:attribute name="mode" use="required" type="aa:HoldingMode">
+        <xs:annotation>
+          <xs:documentation> Mode of investment whether it one time or SIP. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="units" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Units allotted in folio till date
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="closingUnits" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lienUnits" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> The number of units which have been marked as Lien (Mutual fund units pledged against some borrowed amount).  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="rate" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Rate at which it was bought, in case of multiple transaction, the rate
+            will be the average buy price </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nav" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lockingUnits" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Units which are locked and not available for sale
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transactions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Transaction"/>
+      </xs:sequence>
+      <xs:attribute name="startDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>  Start date of investment since when it is applicable </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> End date of investment when tenure get complete   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction ID recorded or captured for investment made.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Assset Management company which is operating the fun.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="registrar" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Trust or institution registering and maintaining the detailed record of the given transaction. E.g. CAMS/KARVY.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Code of scheme choosen by person for the investment.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemePlan" use="required" type="aa:SchemePlan">
+        <xs:annotation>
+          <xs:documentation> It defines the options to buy the same mutual fund scheme, run by the
+            same fund managers who invest in the same stocks and bonds. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isin" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> International Securities Identification Number (ISIN) uniquely identifies a security.   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amfiCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> AMFI code associated with investment made.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="fundType" use="required" type="aa:FundType">
+        <xs:annotation>
+          <xs:documentation> The type of mutual fund. May be money market funds, fixed income funds, equity funds, balanced funds, index funds or real estate funds.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeOption" use="required" type="aa:SchemeOption"> 
+        <xs:annotation>
+          <xs:documentation>   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeTypes" use="required" type="aa:SchemeTypes">
+        <xs:annotation>
+          <xs:documentation> Please refer:
+            https://www.sebi.gov.in/legal/circulars/oct-2017/categorization-and-rationalization-of-mutual-fund-schemes_36199.html
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="schemeCategory" use="required" type="aa:SchemeCategory">
+        <xs:annotation>
+          <xs:documentation> Please refer:
+            https://www.sebi.gov.in/legal/circulars/oct-2017/categorization-and-rationalization-of-mutual-fund-schemes_36199.html
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ucc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Unique Client Code generated by Stock Exchanges for the given transaction.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> The transaction amount.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="closingUnits" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lienUnits" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> The number of units which have been marked as Lien (Mutual fund units pledged against some borrowed amount)  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nav" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="navDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" use="required" type="aa:TransactionType">
+        <xs:annotation>
+          <xs:documentation> Transaction type may be BUY or SELL.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="orderDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date when order is placed for investment.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="executionDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date when order is executed.   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lock-inFlag" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Flag which identify units which are locked and not available for sale.   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lock-inDays" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Units which are locked and not available for sale.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mode" use="required" type="aa:HoldingMode">
+        <xs:annotation>
+          <xs:documentation> Mode of transaction. May be DEMAT,NEFT,Net banking, etc.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Nararation is additional details in form of decription of remark associated with investment.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

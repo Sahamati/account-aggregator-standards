@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/mutual_funds"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://api.rebit.org.in/FISchema/mutual_funds ../FISchema/mutual_funds.xsd"
+	linkedAccRef="" maskedAccNumber="" version="1.1" type="mutualfunds">
+	<Profile>
+		<Holders>
+			<Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED"
+				dematId="" email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+		</Holders>
+
+
+	</Profile>
+	<Summary investmentValue="10.0" currentValue="20.0">
+		<Investment>
+			<Holdings>
+				<Holding amc="" registrar="" schemeCode="" isin="" ucc="" amfiCode="" folioNo=""
+					dividendType="" mode="DEMAT" FatcaStatus="YES" units="" closingUnits=""
+					lienUnits="" rate="" nav="" lockingUnits=""/>
+			</Holdings>
+		</Investment>
+	</Summary>
+	<Transactions endDate="2002-09-24" startDate="2002-09-24">
+		<Transaction txnId="" amc="" registrar="" schemeCode="" schemePlan="DIRECT"
+			schemeTypes="DEBT_SCHEMES" schemeCategory="AGGRESSIVE_HYBRID_FUND" isin="" amfiCode="" schemeOption="REINVEST"
+			fundType="EQUITY" ucc="" amount="" closingUnits="" lienUnits="" nav=""
+			navDate="2002-09-24" type="BUY" orderDate="2002-09-24" executionDate="2002-09-24"
+			lock-inDays="" lock-inFlag="" mode="DEMAT" narration=""/>
+	</Transactions>
+</Account>

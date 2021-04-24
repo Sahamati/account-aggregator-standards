@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/certificates_deposit"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/FISchema/certificates_deposit ../FISchema/cd.xsd"
+    linkedAccRef="" maskedAccNumber="" version="1.0" type="certificates_deposit">
+    <Profile>
+        <Holders>
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED" dematId=""
+                email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true" />
+        </Holders>
+    </Profile>
+    <Summary investmentValue="200" currentValue="100">
+        <Holdings type="">
+            <Holding companyName="" scheme="" isin="" faceValue="230" symbol="" issuerName=""
+                description="" issueDate="2004-04-12" tenureYears="3" tenureMonths="36"
+                tenureDays="120" yield="6" maturityDate="2004-04-12" lastTradedRate="2"
+                lastTradedDate="2004-04-12"/>
+        </Holdings>
+    </Summary>
+    <Transactions endDate="2004-04-12" startDate="2004-04-12">
+        <Transaction txnId=""   isin=""  narration=""
+            transactionDateTime="2004-04-12T13:20:00-05:00" rate="" type="BUY" units="" stt="" currency=""
+            tradeValue="" totalCharge="" otherTaxes=""/>
+    </Transactions>
+</Account>

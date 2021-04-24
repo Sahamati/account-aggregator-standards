@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Account xmlns="http://api.rebit.org.in/FISchema/insurance_policies"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://api.rebit.org.in/FISchema/insurance_policies ../FISchema/insurance_policies.xsd"
+	linkedAccRef="" maskedAccNumber="" version="1.0" type="insurance">
+	<Profile>
+		<Holders type="JOINT">
+			<Holder rank="1" name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED" 
+				email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
+		</Holders>
+		<Riders>
+			<Rider riderType="" sumAssured="" tenureYears="" tenureMonths="" premiumAmount=""
+				policyStartDate="2004-04-12" policyEndDate="2004-04-12"/>
+		</Riders>
+	</Profile>
+	<Summary policyName="" policyNumber="" eiaNumber="" sumAssured="100" coverAmount="90"
+		tenureMonths="" tenureYears="" premiumAmount="20" policyStartDate="2004-04-12"
+		policyType="CHILDREN_PLAN" coverType="BUILDING" premiumFrequency="HALF_YEARLY"
+		premiumPaymentYears="2" premiumPaymentMonths="24" maturityDate="2004-04-12"
+		maturityBenefit="">
+		<MoneyBacks>
+			<MoneyBack date="2004-04-12" amount="1000" description=""/>
+		</MoneyBacks>
+		<ContractClauses>
+			<ContractClause title="" subLimit="" conditions="" exlcusions="" amount="1000"
+				description=""/>
+		</ContractClauses>
+		<Covers>
+			<Cover amount="100" description=""/>
+		</Covers>
+	</Summary>
+	<Transactions startDate="2004-04-12" endDate="2004-04-12">
+		<Transaction txnId="" txnDate="2004-04-12" narration="" type="BONUS" amount="1000"/>
+	</Transactions>
+</Account>

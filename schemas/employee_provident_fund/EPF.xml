@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Account xmlns="http://api.rebit.org.in/FISchema/epf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://api.rebit.org.in/FISchema/epf ../others/others_epf.xsd"
+    linkedAccRef="" maskedAccNumber="" version="1.0" type="epf">
+    <Profile>
+        <Holders>
+            <Holder name="" dob="2002-09-24" mobile="91729391923" nominee="NOT-REGISTERED" uan=""
+                email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true" />
+        </Holders>
+    </Profile>
+    <Summary openingDate="2004-04-12" establishmentId="" establishmentName="" employerBalance="200"
+        employeeBalance="100" totalBalance="100" currentBalance="60"/>
+    <Transactions endDate="" startDate="">
+        <Transaction txnId="" txnDate="2004-04-12" narration="" type="ADJUSTMENT"
+            employeeDepositAmount="100" employerDepositAmount="1000" employeeWithdrawalAmount="500"
+            employerWithdrawalAmount="100" pensionFundAmount="30000"/>
+    </Transactions>
+</Account>

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:aa="http://api.rebit.org.in/others/others_creditcard" elementFormDefault="qualified"
+  targetNamespace="http://api.rebit.org.in/others/others_creditcard"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+  
+  <xs:simpleType name="HolderEmail"> 
+    <xs:restriction base="xs:string"> 
+      <xs:pattern value="[^@]+@[^\.]+\..+"/> 
+    </xs:restriction> 
+  </xs:simpleType> 
+  
+  <xs:simpleType name="version">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="2.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="HoldingNominee">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REGISTERED"/>
+      <xs:enumeration value="NOT-REGISTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="HolderPan">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9][0-9][a-zA-Z]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="CardType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="MASTER_CARD"/>
+      <xs:enumeration value="VISA"/>
+      <xs:enumeration value="RUPAY"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="TypeChoice">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="YES"/>
+      <xs:enumeration value="NO"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  
+  <xs:simpleType name="TransactionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEBIT"/>
+      <xs:enumeration value="CREDIT"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:element name="Account">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Profile" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Summary" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Transactions" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="maskedAccNumber" use="required" type="xs:string"/>
+      <xs:attribute name="linkedAccRef" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required" type="aa:version"/>
+      <xs:attribute name="type" use="required" type="xs:string" fixed="credit_card"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Profile">
+    <xs:annotation>
+      <xs:documentation>Basic Profile of the account which should include the Account Owner information, 
+        maskedAccNumber and linkedAccRef numbers, type of account specific to the FI type and any other generic details
+        as might be pertinent for the specified FI type. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holders"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Summary">
+    <xs:annotation>
+      <xs:documentation>The value of the account, term of the deposits if relevant and any other data 
+        that summarizes the funds in the account. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      
+      <xs:attribute name="currentDue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Current month outstanding balance on the credit card hold </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lastStatementDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of last statement generated </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dueDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Due date for the oustanding amount which need to pay </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="previousDueAmount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Previous month outstanding balance  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="totalDueAmount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Total outstanding balance due or need to pay. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="minDueAmount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Minimum balance which need to paid. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="creditLimit" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Total Credit Limit of cardholder. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="cashLimit" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Total Cash Limit of cardholder.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="availableCredit" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation>Available Credit Limit in the account.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="loyaltyPoints" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Loyalty Point earned on the transaction conducted </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="financeCharges" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Finance charges implied by company if applicable </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Holders">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holder"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Holder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Cards"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of Profile holder to whom card is issued. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dob" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of birth of primary account holder.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mobile" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation> Mobile number of primary holder.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nominee" use="required" type="aa:HoldingNominee">
+        <xs:annotation>
+          <xs:documentation> Name of nominee associated with the account. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="landline" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Landline number of primary holder. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="address" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Address of primary holder. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+        <xs:annotation>
+          <xs:documentation> Email ID of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+        <xs:annotation>
+          <xs:documentation> PAN number of primary account holder  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation> KYC status whether its completed or pending  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Cards">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Card"/>
+      </xs:sequence>
+      
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Card">
+    <xs:complexType>
+      <xs:attribute name="cardType" use="required" type="aa:CardType">
+        <xs:annotation>
+          <xs:documentation> Type of credit card - RuPay, Visa, Mastercard, etc </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="primary" use="required" type="aa:TypeChoice">
+        <xs:annotation>
+          <xs:documentation> Name of Profile holder to whom card is issued </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="issuedDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Issue date of credit card  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="maskedCardNumber" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> The credit card number with some of the numbers masked </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+     
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="Transactions">
+    <xs:annotation>
+      <xs:documentation>Details of all transactions that have been posted in an account. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Transaction"/>
+      </xs:sequence>
+      <xs:attribute name="startDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Start date of investment since when it is applicable </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> End date of investment when tenure get complete   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction ID recorded or captured for investment made </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnType" use="required" type="aa:TransactionType">
+        <xs:annotation>
+          <xs:documentation> Type of transaction whether debit or credit.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Transaction date time stamp for particular record when investment taken place </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> The transaction amount </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="valueDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Available balance or value as on date </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+       <xs:attribute name="narration" use="required" type="xs:string">
+         <xs:annotation>
+           <xs:documentation> Nararation is additional details in form of decription of remark associated with investment. </xs:documentation>
+         </xs:annotation>
+       </xs:attribute>
+      <xs:attribute name="statementDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Statement Generated Date. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mcc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Merchant category code for the given transaction </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="maskedCardNumber" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> The credit card number with some of the numbers masked.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      
+    </xs:complexType>
+  </xs:element>
+  
+ </xs:schema>

@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:aa="http://api.rebit.org.in/FISchema/sip" elementFormDefault="qualified"
+  targetNamespace="http://api.rebit.org.in/FISchema/sip"
+  xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" vc:minVersion="1.1">
+  <!--  -->
+
+  <xs:simpleType name="HoldersType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SINGLE"/>
+      <xs:enumeration value="JOINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="version">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="2.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderEmail">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^@]+@[^\.]+\..+"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:simpleType name="NomineeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SOLE"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HolderPan">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][0-9][0-9][0-9][0-9][a-zA-Z]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HoldingType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SOLE"/>
+      <xs:enumeration value="JOINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="TransactionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BUY"/>
+      <xs:enumeration value="SELL"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HoldingStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INDIVIDUAL"/>
+      <xs:enumeration value="MINOR"/>
+      <xs:enumeration value="HUF"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingSubtype">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ANY-ONE-OR-SURVIVOR"/>
+      <xs:enumeration value="EITHER-OR-SURVIVOR"/>
+      <xs:enumeration value="OTHERS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HoldingMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DEMAT"/>
+      <xs:enumeration value="PHYSICAL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="HoldingNominee">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REGISTERED"/>
+      <xs:enumeration value="NOT-REGISTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!--  -->
+  <xs:element name="Account">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Profile" minOccurs="0"/>
+        <xs:element ref="aa:Summary" minOccurs="0"/>
+        <xs:element ref="aa:Transactions" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="linkedAccRef" use="required" type="xs:string"/>
+      <xs:attribute name="maskedAccNumber" use="required" type="xs:string"/>
+      <xs:attribute name="version" use="required" type="aa:version"/>
+      <xs:attribute name="type" use="required" type="xs:string" fixed="sip"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Profile">
+    <xs:annotation>
+      <xs:documentation>Basic Profile of the account which should include the Account Owner
+        information, maskedAccNumber and linkedAccRef numbers, type of account specific to the FI
+        type and any other generic details as might be pertinent for the specified FI type.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holders"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Summary">
+    <xs:annotation>
+      <xs:documentation>The value of the account, term of the deposits if relevant and any other
+        data that summarizes the funds in the account. </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holdings"/>
+        <xs:element ref="aa:Investments"/>
+      </xs:sequence>
+      <xs:attribute name="folioNo" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Unique folio number associated with investment </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="investmentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Principal or Actual amount of investment   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="currentValue" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Current value of investment as on date </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Investments">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Investment"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="issueDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>  Issue date of investment as per period choosen  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="maturityDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Maturity date of investment   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+
+
+  <xs:element name="Holders">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holder"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required" type="aa:HoldersType">
+        <xs:annotation>
+          <xs:documentation> Type of account whether held by an individual and operated solo or jointly  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holdings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Holding"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+
+  <xs:element name="Investment">
+    <xs:complexType>
+      <xs:attribute name="type" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="startDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Start date of investment as per period choosen  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation>End date of investment as per period choosen  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Holder">
+    <xs:complexType>
+      <xs:attribute name="name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of primary holder operating the account  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dob" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of birth of primary account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="mobile" use="required" type="xs:integer">
+        <xs:annotation>
+          <xs:documentation> Primary mobile number of account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nominee" use="required" type="aa:HoldingNominee">
+        <xs:annotation>
+          <xs:documentation> Name of nominee associated with the account  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dematId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Demat ID assigned or issued to investor </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="landline" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="address" use="optional" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Address of primary account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+        <xs:annotation>
+          <xs:documentation> Email ID of primary account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+        <xs:annotation>
+          <xs:documentation> PAN of account holder </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation> KYC status whether its completed or pending </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Holding">
+    <xs:complexType>
+      <xs:attribute name="amc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Name of asset management company associated with investment</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="registrar" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of registrar linked with investment made</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="scheme" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Scheme in which investment made whether it direct, regular or growth option</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isin" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> International Securities Identification Number (ISIN) uniquely identifies a security. </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ucc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Uniform Commercial Code formal or legal code represent investment</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amfiCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> AMFI code associated with investment made</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="folioNo" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Unique folio number associated with investment </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="holdingType" use="required" type="aa:HoldingType">
+        <xs:annotation>
+          <xs:documentation> Reinvest, Payout or Growth type of Dividend </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="holder1Name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of the first holder who made initial investment </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+      <xs:attribute name="holder2Name" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Name of the second holder in case of joint investmet </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+      <xs:attribute name="nominee" use="required" type="aa:NomineeType">
+        <xs:annotation>
+          <xs:documentation> Name of nominee associated with the account  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+        <xs:annotation>
+          <xs:documentation> Email ID of account holders </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="units" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Units allotted in folio till date </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nav" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="value" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Current value of investment calculate based on units and NAV </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="devidentType" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Dividend type - Interim, Final and Special  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Amount invested or to be invested at fixed intervals </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="frequency" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Frequency of investment whether its monthly, quarterly, yearly  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="instalmentDay" use="required" type="xs:positiveInteger">
+        <xs:annotation>
+          <xs:documentation> Date of installment when amount will deduct in case of SIP </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="pendingInstalments" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Number of installment pending for the SIP period choosen at initial stage </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="completeInstalments" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Number of installment alreay processed through SIP mode </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="lastInstalmentDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Date of last installment when it was processed  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nextInstalmentDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Due date of last installment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="creationDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> SIP creation date  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="modificationDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Modification Date of SIP in terms of SIP date, SIP amount etc </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="ceasedDate" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Ceased date of SIP  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transactions">
+    <xs:annotation>
+      <xs:documentation>Details of all transactions that have been posted in an account.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="aa:Transaction"/>
+      </xs:sequence>
+      <xs:attribute name="startDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> Start date of transaction or period for which details are require   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="endDate" use="required" type="xs:date">
+        <xs:annotation>
+          <xs:documentation> End date of transaction or period for which details are require  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Transaction">
+    <xs:complexType>
+      <xs:attribute name="txnId" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Transaction ID recorded or captured for investment made  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="txnDate" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Date of transaction conducted  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>  Name of asset management company associated with investment </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="scheme" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Scheme in which investment made whether it direct, regular or growth option  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="isin" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> International Securities Identification Number (ISIN) uniquely identifies a security.  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+      <xs:attribute name="ucc" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Uniform Commercial Code formal or legal code represent investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amfiCode" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> AMFI code associated with investment made  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="folioNo" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Unique folio number associated with investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="type" use="required" type="aa:TransactionType">
+        <xs:annotation>
+          <xs:documentation>   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="narration" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Nararation is additional details in form of decription of remark associated with investment   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="units" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Number of Units which was purchased   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="nav" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> NAV is current market rate of security held as on date  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="cost" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation>  Transaction fee on the quantum of funds invested </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="stt" use="required" type="xs:string">
+        <xs:annotation>
+          <xs:documentation> Secuity Transaction Tax applicable on investment  </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="amount" use="required" type="xs:float">
+        <xs:annotation>
+          <xs:documentation> Amount invested or to be invested at fixed intervals   </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
