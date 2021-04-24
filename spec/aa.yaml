@@ -1,0 +1,2726 @@
+swagger: '2.0'
+info:
+  title: Account Aggregator API
+  x-custom-tags:
+    x-changelog: >-
+      <p> 1. Updated /FI/Notification to support Partial Fetch Usecase<br> 2.
+      New Enums Added for FIStatus - READY / DENIED / PENDING / DELIVERED /
+      TIMEOUT<br> 3. Updated /FI/Fetch to support Query Params<br> i) 
+      /FI/Fetch/{SessionID} - All accounts & FIP in the session<br> ii)
+      /FI/Fetch/{SessionID}?fipid=fip1 - All Accounts with the FIP<br> iii)
+      /FI/Fetch/{SessionID}?fipid=fip1&linkRefNumber=123456985321 - Particular
+      Account<br> iv)
+      /FI/Fetch/{SessionID}?fipid=fip1&linkRefNumber=123456985321&linkRefNumber=1236548972
+      - Multiple Accounts Same FIP<br> Note's: <br> i) fipid in Query Params is
+      limited to only 1<br> ii) All variations will give response containing
+      accounts whose data has been delivered or not received. Such accounts
+      would have encryptedFI and KeyMaterials empty<br> </p>
+    x-api-name: Account Aggregator (AA) API
+  description: |-
+    # Summary
+
+      The Account Aggregator (AA) serves as an intermediary between Financial Information Providers (such as banks, securities, insurance, pensions and other account/finance management service providers) and Financial Information Users. This Application Programming Interface enables AA to manage the lifecycle of consent artefacts, mediates the secure flow of financial information from FIPs to FIUs based on explicit user consent and exposes Notification method so that FIU and FIP can notify it about the events generated during consent flow and data flow. All consent necessarily have to be generated directly on application provided by AA. 
+      
+
+    ---
+  version: 1.1.2
+  contact:
+    email: aa-api@rebit.org.in
+tags:
+  - name: Consent Flow
+    description: Consent Management APIs
+  - name: Data Flow
+    description: APIs for aggregation of FI
+  - name: Notifications
+    description: This API is used by the FIPs and FIUs to submit notifications to the AA.
+  - name: Monitoring
+    description: Monitoring API Interface for checking availability of AA.
+schemes:
+  - https
+securityDefinitions:
+  Client_api_key:
+    type: apiKey
+    name: client_api_key
+    in: header
+  FIP_api_key:
+    type: apiKey
+    name: fip_api_key
+    in: header
+security:
+  - Client_api_key: []
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /Consent:
+    post:
+      tags:
+        - Consent Flow
+      description: >-
+        This API is intended for AA Client to request generation of digitally
+        signed consent artefacts. The customer has to use the AA application to
+        select accounts and approve consent generation. Once the customer
+        approves the consent request on the AA application, AA generates the
+        digitally signed consent artefacts. Note - The AA Client never sees the
+        account of the customer or directly participates in consent
+        generation.  
+
+
+        <br>Note: "Request Body Example Value" and "Responses Example Value"
+        given below is for illustrative purposes only.
+      parameters:
+        - name: x-jws-signature
+          type: string
+          format: byte
+          in: header
+          required: true
+          description: Detached JWS of the body
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ConsentsRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConsentsResponse'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequestConsent'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body                
+
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFound'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '409':
+          description: Conflict
+          schema:
+              $ref: '#/definitions/Conflict'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '412':
+          description: Precondition failed
+          schema:
+              $ref: '#/definitions/PreconditionFailed'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+  '/Consent/handle/{consentHandle}':
+    get:
+      tags:
+        - Consent Flow
+      description: >-
+        This API is intended for checking the status of a previously submitted
+        Consent Artefacts creation request.
+
+        <br> Note: "Request Body Example Value" and "Responses Example Value"
+        given below is for illustrative purposes only.
+      parameters:
+        - name: x-jws-signature
+          type: string
+          format: byte
+          in: header
+          required: true
+          description: Detached JWS of the endpoint URI '/Consent/handle/{consentHandle}' with {consentHandle} substituted with value before generating the JWS.
+        - name: consentHandle
+          in: path
+          required: true
+          description: >-
+            A handle provided to the AA client that is later used to obtain the
+            consent once generated.
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            required:
+              - ver
+              - timestamp
+              - txnid
+              - ConsentHandle
+              - ConsentStatus
+            properties:
+              ver:
+                type: string
+                example: '1.0'
+                description: The version of the API
+                xml:
+                  attribute: true
+              timestamp:
+                type: string
+                format: date-time
+                example: '2018-12-06T11:39:57.153Z'
+                description: >-
+                  Creation timestamp of the message which will be updated at
+                  each leg
+                xml:
+                  attribute: true
+              txnid:
+                type: string
+                description: >-
+                  The unique transaction identifier used for providing an end to end traceability of API calling.
+                example: 795038d3-86fb-4d3a-a681-2d39e8f4fc3c
+                xml:
+                  attribute: true
+              ConsentHandle:
+                type: string
+                example: 39e108fe-9243-11e8-b9f2-0256d88baae8
+                description: Generate the consent handle id on the request of customer
+              ConsentStatus:
+                $ref: '#/definitions/Consent'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequestConsentStatus'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body 
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFound'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '409':
+          description: Conflict
+          schema:
+              $ref: '#/definitions/Conflict'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '412':
+          description: Precondition failed
+          schema:
+              $ref: '#/definitions/PreconditionFailed'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+  '/Consent/{id}':
+    get:
+      tags:
+        - Consent Flow
+      security:
+        - FIP_api_key: []
+        - Client_api_key: []
+      description: >-
+        This API is intended for fetching the information associated with the
+        specific consent.
+
+        <br> Note: "Request Body Example Value" and "Responses Example Value"
+        given below is for illustrative purposes only.
+      parameters:
+        - name: x-jws-signature
+          type: string
+          format: byte
+          in: header
+          required: true
+          description: Detached JWS of the endpoint URI '/Consent/{id}' with {id} substituted with value before generating the JWS.
+        - name: id
+          in: path
+          required: true
+          description: The id of the Consent Artefact to retrieve
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConsentArtefact'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequestConsentFetch'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body 
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFound'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '409':
+          description: Conflict
+          schema:
+              $ref: '#/definitions/Conflict'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '412':
+          description: Precondition failed
+          schema:
+              $ref: '#/definitions/PreconditionFailed'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+  /FI/request:
+    post:
+      tags:
+        - Data Flow
+      description: >-
+        The FIU or the User submits the Consent IDs of the consents required for
+        fetching financial information from the FIP(s). A set of sessionIds are
+        generated and returned. These sessionIDs enable the FIU or the User to
+        fetch the information from the AA once available.
+
+        <br> Note: "Request Body Example Value" and "Responses Example Value"
+        given below is for illustrative purposes only.
+      parameters:
+        - name: x-jws-signature
+          type: string
+          format: byte
+          in: header
+          required: true
+          description: Detached JWS of the body
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FIRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FIResponse'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequestFIRequest'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body 
+                
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFound'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '409':
+          description: Conflict
+          schema:
+              $ref: '#/definitions/Conflict'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '412':
+          description: Precondition failed
+          schema:
+              $ref: '#/definitions/PreconditionFailed'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+  '/FI/fetch/{sessionId}':
+    get:
+      tags:
+        - Data Flow
+      description: >-
+        Once FIU receives the notification <Data-Ready> from AA, using digitally
+        signed consent request received from AA, this API can be used to fetch
+        the financial information from the AA.
+
+        <br> Note: "Request Body Example Value" and "Responses Example Value"
+        given below is for illustrative purposes only.
+      parameters:
+        - name: x-jws-signature
+          type: string
+          format: byte
+          in: header
+          required: true
+          description: Detached JWS of the endpoint URI '/FI/fetch/{sessionId}' with {sessionId} substituted with value before generating the JWS.
+        - name: sessionId
+          in: path
+          required: true
+          type: string
+          description: Session ID for the FI Request Session
+        - name: fipId
+          in: query
+          type: string
+          required: false
+          description: FIP ID as defined in the Account Aggregator Ecosystem. Maximum 1.
+        - name: linkRefNumber
+          in: query
+          type: array
+          required: false
+          minItems: 1
+          uniqueItems: true
+          items:
+            type: string
+          description: >-
+            linkRefNumber/s for the accounts to be fetched from particular FIP.
+            Supports more than 1.
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/FIFetchResponse'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequestFIFetch'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body 
+        '403':
+          description: Forbidden
+          schema:
+              $ref: '#/definitions/ForbiddenFIFetch'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFoundFIFetch'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '409':
+          description: Conflict
+          schema:
+              $ref: '#/definitions/Conflict'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '410':
+          description: Data Gone
+          schema:
+              $ref: '#/definitions/DataGoneFIFetch'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '412':
+          description: Precondition failed
+          schema:
+              $ref: '#/definitions/PreconditionFailed'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+  /Consent/Notification:
+    post:
+      tags:
+        - Notifications
+      description: >-
+        API handles the notifications corresponding to the events generated
+        during consent flow.
+
+        <br> Note: "Request Body Example Value" and "Responses Example Value"
+        given below is for illustrative purposes only.
+      security:
+        - Client_api_key: []
+        - FIP_api_key: []
+      parameters:
+        - name: x-jws-signature
+          type: string
+          format: byte
+          in: header
+          required: true
+          description: Detached JWS of the body
+        - name: body
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/ConsentStatusNotification'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/NotificationResponse'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequestConsentNotification'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body 
+                
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFound'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '409':
+          description: Conflict
+          schema:
+              $ref: '#/definitions/Conflict'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '412':
+          description: Precondition failed
+          schema:
+              $ref: '#/definitions/PreconditionFailed'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+  /FI/Notification:
+    post:
+      tags:
+        - Notifications
+      description: >-
+        API handles the notifications corresponding to the events generated
+        during data-flow.
+
+        <br> Note: "Request Body Example Value" and "Responses Example Value"
+        given below is for illustrative purposes only.
+      security:
+        - Client_api_key: []
+        - FIP_api_key: []
+      parameters:
+        - name: x-jws-signature
+          type: string
+          format: byte
+          in: header
+          required: true
+          description: Detached JWS of the body
+        - name: body
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/FIStatusNotification'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/NotificationResponse'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequestFINotification'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+                
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFound'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '409':
+          description: Conflict
+          schema:
+              $ref: '#/definitions/Conflict'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '412':
+          description: Precondition failed
+          schema:
+              $ref: '#/definitions/PreconditionFailed'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+  /Account/link/Notification:
+    post:
+      tags:
+        - Notifications
+      description: >-
+        API handles the notifications corresponding to the events generated
+        during account linkage flow.
+
+        <br> Note: "Request Body Example Value" and "Responses Example Value"
+        given below is for illustrative purposes only.
+      security:
+        - Client_api_key: []
+        - FIP_api_key: []
+      parameters:
+        - name: x-jws-signature
+          type: string
+          format: byte
+          in: header
+          required: true
+          description: Detached JWS of the body
+        - name: body
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/AccountLinkStatusNotification'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/NotificationResponse'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequest'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body 
+                
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFound'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '409':
+          description: Conflict
+          schema:
+              $ref: '#/definitions/Conflict'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '412':
+          description: Precondition failed
+          schema:
+              $ref: '#/definitions/PreconditionFailed'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+  /Heartbeat:
+    get:
+      tags:
+        - Monitoring
+      description: |-
+        This API is used by FIP and FIUs to check availability of AAs.
+
+         <br> Note: "Request Body Example Value" and "Responses Example Value" given below is for illustrative purposes only.
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/HeartbeatResponse'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '400':
+          description: Bad Request
+          schema:
+              $ref: '#/definitions/BadRequest'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+                
+        '401':
+          description: Unauthorized Access
+          schema:
+              $ref: '#/definitions/UnauthorizedAccess'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body                 
+        '404':
+          description: Not Found
+          schema:
+              $ref: '#/definitions/NotFound'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+
+        '500':
+          description: Internal Server Error
+          schema:
+              $ref: '#/definitions/InternalServerError'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '501':
+          description: Not Implemented
+          schema:
+              $ref: '#/definitions/NotImplemented'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+        '503':
+          description: Service Unavailable
+          schema:
+              $ref: '#/definitions/ServiceUnavailable'
+          headers:
+            x-jws-signature:
+                type: string
+                format: byte
+                description: Detached JWS of the response body
+definitions:
+  ConsentsRequest:
+    type: object
+    xml:
+      name: Consent
+    description: This call generated via AA client.
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: The version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        description: Creation timestamp of the message which will be updated at each leg
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        example: 4a4adbbe-29ae-11e8-a8d7-0289437bf331
+        description: >-
+          The transaction identifier generated by the requester for providing an
+          end to end traceability. The AA should use this transaction identifier
+          in the responses and notifications for FIU to correlate response with
+          the request. The transaction identifier will be a UUID generated
+          string.
+        xml:
+          attribute: true
+      ConsentDetail:
+        type: object
+        description: Specify the financial information types that customer wants to access
+        required:
+          - consentStart
+          - consentExpiry
+          - consentMode
+          - fetchType
+          - consentTypes
+          - fiTypes
+          - DataConsumer
+          - Customer
+          - Purpose
+          - FIDataRange
+          - DataLife
+          - Frequency
+        properties:
+          consentStart:
+            type: string
+            format: date-time
+            example: '2019-12-06T11:39:57.153Z'
+            description: >-
+              Start date-time of the consent. This field would allow for
+              Post-Dated consent.
+            xml:
+              attribute: true
+          consentExpiry:
+            type: string
+            format: date-time
+            example: '2019-12-06T11:39:57.153Z'
+            description: Expiry date-time for the consent
+            xml:
+              attribute: true
+          consentMode:
+            type: string
+            description: Consent Mode as defined in the AA Technical Specification
+            enum:
+              - VIEW
+              - STORE
+              - QUERY
+              - STREAM
+            xml:
+              attribute: true
+          fetchType:
+            type: string
+            description: FI Fetch type. Could be ONETIME or PERIODIC
+            enum:
+              - ONETIME
+              - PERIODIC
+            xml:
+              attribute: true
+          consentTypes:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              enum:
+                - PROFILE
+                - SUMMARY
+                - TRANSACTIONS
+              example: PROFILE
+            xml:
+              attribute: true
+          fiTypes:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              description: >-
+                List of FITypes used in the Consent. FITypes names should be as
+                defined in the AA Technical Specification
+              example: DEPOSIT
+              enum:
+                - DEPOSIT
+                - TERM_DEPOSIT
+                - RECURRING_DEPOSIT
+                - SIP
+                - CP
+                - GOVT_SECURITIES
+                - EQUITIES
+                - BONDS
+                - DEBENTURES
+                - MUTUAL_FUNDS
+                - ETF
+                - IDR
+                - CIS
+                - AIF
+                - INSURANCE_POLICIES
+                - NPS
+                - INVIT
+                - REIT
+                - OTHER
+          DataConsumer:
+            type: object
+            required:
+              - id
+            description: Contains the FIU id
+            properties:
+              id:
+                type: string
+                example: fiu7465374537id
+                description: The identifier of the FIU
+                xml:
+                  attribute: true
+          Customer:
+            type: object
+            required:
+              - id
+            description: Contains the customer address
+            properties:
+              id:
+                type: string
+                example: customer_identifier@AA_identifier
+                description: >-
+                  The identifier of the Customer can be generated during the
+                  registration with AA
+                xml:
+                  attribute: true
+          Purpose:
+            $ref: '#/definitions/Purpose'
+          FIDataRange:
+            type: object
+            required:
+              - from
+              - to
+            description: Specify the datetime range for querying the financial information
+            properties:
+              from:
+                type: string
+                format: date-time
+                example: '2018-12-06T11:39:57.153Z'
+                description: >-
+                  Selects the starting date-time from where the financial information is to be start. It is a mandatory field only if consentTypes includes ENUM TRANSACTIONS in consent parameters.
+                xml:
+                  attribute: true
+              to:
+                type: string
+                format: date-time
+                example: '2019-12-06T11:39:57.153Z'
+                description: >-
+                  Selects the ending date-time from where the financial information is to be end. It is a mandatory field only if consentTypes includes ENUM TRANSACTIONS in consent parameters.
+                xml:
+                  attribute: true
+          DataLife:
+            description: How long consumer is allowed to store data
+            type: object
+            required:
+              - unit
+              - value
+            properties:
+              unit:
+                type: string
+                description: A unit of how long consumer can store the data
+                xml:
+                  attribute: true
+                enum:
+                  - MONTH
+                  - YEAR
+                  - DAY
+                  - INF
+              value:
+                type: number
+                description: >-
+                  Define the value of unit of how long can consumer store the data
+                xml:
+                  attribute: true
+          Frequency:
+            description: Frequency information for periodic information access. For example UNIT - Month, Value - 6. it means that make 6 times FI request per month so the month is divided into 6 parts for FI data requests. 
+            type: object
+            required:
+              - unit
+              - value
+            properties:
+              unit:
+                type: string
+                description: A unit of the frequency to access the financial information. It is a mandatory field only if fetchType is Periodic in consent parameters.
+                xml:
+                  attribute: true
+                enum:
+                  - HOUR
+                  - DAY
+                  - MONTH
+                  - YEAR
+                  - INF
+              value:
+                type: number
+                description: >-
+                  Define how many time consumer can access the financial information
+                xml:
+                  attribute: true
+          DataFilter:
+            type: array
+            description: rules that will be utilized by FIP to filter the data
+            items:
+              type: object
+              required:
+                - type
+                - operator
+                - value
+              properties:
+                type:
+                  type: string
+                  description: The condition to filter the data on.
+                  enum:
+                    - TRANSACTIONTYPE
+                    - TRANSACTIONAMOUNT
+                  example: TRANSACTIONAMOUNT
+                  xml:
+                    attribute: true
+                operator:
+                  type: string
+                  description: Operator to filter data by.
+                  enum:
+                    - '='
+                    - '!='
+                    - '>'
+                    - '<'
+                    - '>='
+                    - '<='
+                  example: '>='
+                  xml:
+                    attribute: true
+                value:
+                  type: string
+                  description: Value to filter data
+                  example: 20000
+                  xml:
+                    attribute: true
+            xml:
+              name: DataFilter
+    required:
+      - ver
+      - timestamp
+      - txnid
+      - ConsentDetail
+  ConsentsResponse:
+    type: object
+    required:
+      - ver
+      - txnid
+      - timestamp
+      - Customer
+      - ConsentHandle
+    xml:
+      name: ConsentsResponse
+      namespace: 'http://standards.rebit.org.in/aa'
+    description: This is a response to the RequestConsent API call
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: Version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        example: '2018-12-06T11:39:57.153Z'
+        description: Creation timestamp of the message which will be updated at each leg
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        example: 4a4adbbe-29ae-11e8-a8d7-0289437bf331
+        description: >-
+          The transaction identifier that was sent in the request is echoed back
+          to the client for providing an end to end traceability.
+        xml:
+          attribute: true
+      Customer:
+        type: object
+        required:
+          - id
+        description: Contains the customer address
+        properties:
+          id:
+            type: string
+            example: customer_identifier@AA_identifier
+            description: >-
+              The identifier of the Customer can be generated during the
+              registration with AA
+            xml:
+              attribute: true
+      ConsentHandle:
+        type: string
+        format: byte
+        example: 39e108fe-9243-11e8-b9f2-0256d88baae8
+        description: Generate the consent handle id on the request of customer
+  FIRequest:
+    type: object
+    required:
+      - ver
+      - timestamp
+      - txnid
+      - FIDataRange
+      - Consent
+      - KeyMaterial
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: The version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        example: '2018-12-06T11:39:57.153Z'
+        description: Creation timestamp of the message which will be updated at each leg
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: >-
+          The unique transaction identifier used for providing an end to end
+          traceability.
+        example: e8cc6822-d4bb-4eb1-9e1b-4996fbff8acb
+        xml:
+          attribute: true
+      FIDataRange:
+        type: object
+        required:
+          - from
+          - to
+        description: Specify the datetime range for querying the financial information
+        properties:
+          from:
+            type: string
+            format: date-time
+            example: '2018-12-06T11:39:57.153Z'
+            description: >-
+              Selects the starting date-time from where the financial
+              information is to be start
+            xml:
+              attribute: true
+          to:
+            type: string
+            format: date-time
+            example: '2019-12-06T11:39:57.153Z'
+            description: >-
+              Selects the ending date-time from where the financial information
+              is to be end
+            xml:
+              attribute: true
+      Consent:
+        type: object
+        required:
+          - id
+          - digitalSignature
+        properties:
+          id:
+            type: string
+            description: Contains consent id which is base-64 encoded unique string
+            example: 654024c8-29c8-11e8-8868-0289437bf331
+            xml:
+              attribute: true
+          digitalSignature:
+            type: string
+            format: byte
+            description: >-
+              Signature part of the Consent JWS.
+              The reciever has to check the given signature matches with the signature in the original consent JWS.
+            example: >-
+              NdjwMjLortTb10dxcJezkvdOxPVvEdZvIqwqVWOHnE8pS_YDswcRPLTRmds2xO-Tvm_A2cFv1qKYpaZnv8Bl6xmZoOsG_F8_40gRZqIhz5hF9puzp8lEEhMlZ6NaX2Y2OYkwHcOBBpCIXpLXB4CMWiefUEWjO9zKDd5JJwZ4vLWeT4qgwvPfRqE60B33tzVlF5E6OA2mKK17sGRXsfrI9obEjL52RMdGo_9bv1HnHfvPlbj5ihj6d_5iTtoh7HUC_X8CrJGvkgkCjP_7of1jPb5QgJ9nx_Yfsxj3vf8zEseZIVISjF3MwBzW7Di4CpfQl4wlnpkQO9MKu78F69Z9Ig
+      KeyMaterial:
+        $ref: '#/definitions/KeyMaterial'
+    xml:
+      name: FIRequest
+  FIResponse:
+    type: object
+    required:
+      - ver
+      - timestamp
+      - txnid
+      - consentId
+      - sessionId
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: The version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        example: '2018-12-06T11:39:57.153Z'
+        description: Creation timestamp of the message which will be updated at each leg
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: >-
+          The unique transaction identifier used for providing an end to end
+          traceability.
+        example: e8cc6822-d4bb-4eb1-9e1b-4996fbff8acb
+        xml:
+          attribute: true
+      consentId:
+        type: string
+        description: >-
+          Consent ID of the consent artefact for which the session has been
+          created.
+        example: 654024c8-29c8-11e8-8868-0289437bf331
+        xml:
+          attribute: true
+      sessionId:
+        type: string
+        format: byte
+        description: >-
+          A session ID is a base-64 encoded UUID number that an AA assigns to a
+          specific user for requesting the  financial information access. It is
+          also used for logging and tracking an end-to-end  financial
+          information sharing with customer
+        example: caa2f259-2dc2-4075-87aa-6d81018b6183
+        xml:
+          attribute: true
+  Error:
+    type: object
+    description: The error code is a unique string that identifies the error.
+    required:
+      - errCode
+      - errMsg
+    properties:
+      code:
+        type: integer
+        description: Unique error response code
+        xml:
+          attribute: true
+      msg:
+        type: string
+        description: Error Message
+        xml:
+          attribute: true
+      detail:
+        type: string
+        description: Description of the specific error
+        xml:
+          attribute: true
+  Consent:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Consent ID of the generated consent
+        example: 654024c8-29c8-11e8-8868-0289437bf331
+        xml:
+          attribute: true
+      status:
+        type: string
+        description: Specifiy the status of consent artefact
+        enum:
+          - READY
+          - FAILED
+          - PENDING
+        xml:
+          attribute: true
+    xml:
+      name: Consent
+    description: Contains the consent artefact related information
+  ConsentArtefact:
+    type: object
+    required:
+      - ver
+      - txnid
+      - consentId
+      - createTimestamp
+      - signedConsent
+      - ConsentUse
+      - status
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: Version of the AA Ecosystem API's
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: >-
+          The unique transaction identifier used for providing an end to end
+          traceability. 
+        example: 0b811819-9044-4856-b0ee-8c88035f8858
+        xml:
+          attribute: true
+      consentId:
+        type: string
+        description: The unique ID of the consent artefact
+        example: XXXX-XXXX-XXXX-XXXX
+        xml:
+          attribute: true
+      status:
+        type: string
+        description: Current Status of the Consent
+        enum:
+          - ACTIVE
+          - PAUSED
+          - REVOKED
+          - EXPIRED
+      createTimestamp:
+        type: string
+        format: date-time
+        example: '2018-12-06T11:39:57.153Z'
+        description: Creation time of the consent artefact
+        xml:
+          attribute: true
+      signedConsent:
+        type: string
+        format: byte
+        description: Signature of the ConsentDetail of the consent artefact. The signature is in the JWS Compact Serialization format, which is compact, URL-safe representation of a JWS. See ConsentDetail model for consent format.
+        example: eyJhbGciOiJSUzI1NiIsImtpZCI6IjQyNzE5MTNlLTdiOTMtNDlkZC05OTQ5LTFjNzZmZjVmYzVjZiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19.ew0KICAgICAgICAiY29uc2VudFN0YXJ0IjogIjIwMTktMDUtMjhUMTE6Mzg6MjAuMzgwKzAwMDAiLA0KICAgICAgICAiY29uc2VudEV4cGlyeSI6ICIyMDIwLTA1LTI4VDExOjM4OjIwLjM4MSswMDAwIiwNCiAgICAgICAgImNvbnNlbnRNb2RlIjogIlZJRVciLA0KICAgICAgICAiZmV0Y2hUeXBlIjogIk9ORVRJTUUiLA0KICAgICAgICAiY29uc2VudFR5cGVzIjogWw0KICAgICAgICAgICAgIlBST0ZJTEUiLA0KICAgICAgICAgICAgIlNVTU1BUlkiLA0KICAgICAgICAgICAgIlRSQU5TQUNUSU9OUyINCiAgICAgICAgXSwNCiAgICAgICAgImZpVHlwZXMiOiBbDQogICAgICAgICAgICAiREVQT1NJVCIsDQogICAgICAgICAgICAiVEVSTS1ERVBPU0lUIg0KICAgICAgICBdLA0KICAgICAgICAiRGF0YUNvbnN1bWVyIjogew0KICAgICAgICAgICAgImlkIjogImNvb2tpZWphci1hYUBmaW52dS5pbiIsDQogICAgICAgICAgICAidHlwZSI6ICJBQSINCiAgICAgICAgfSwNCiAgICAgICAgIkRhdGFQcm92aWRlciI6IHsNCiAgICAgICAgICAgICJpZCI6ICJCQVJCMEtJTVhYWCIsDQogICAgICAgICAgICAidHlwZSI6ICJGSVAiDQogICAgICAgIH0sDQogICAgICAgICJDdXN0b21lciI6IHsNCiAgICAgICAgICAgICJpZCI6ICJkZW1vQGZpbnZ1Ig0KICAgICAgICB9LA0KICAgICAgICAiQWNjb3VudHMiOiBbDQogICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgImZpVHlwZSI6ICJERVBPU0lUIiwNCiAgICAgICAgICAgICAgICAiZmlwSWQiOiAiQkFSQjBLSU1YWFgiLA0KICAgICAgICAgICAgICAgICJhY2NUeXBlIjogIlNBVklOR1MiLA0KICAgICAgICAgICAgICAgICJsaW5rUmVmTnVtYmVyIjogIlVCSTQ4NTk2NDU3OSIsDQogICAgICAgICAgICAgICAgIm1hc2tlZEFjY051bWJlciI6ICJVQkk4NTIxNzg4MTI3OSINCiAgICAgICAgICAgIH0sDQogICAgICAgICAgICB7DQogICAgICAgICAgICAgICAgImZpVHlwZSI6ICJERVBPU0lUIiwNCiAgICAgICAgICAgICAgICAiZmlwSWQiOiAiQkFSQjBLSU1YWFgiLA0KICAgICAgICAgICAgICAgICJhY2NUeXBlIjogIlNBVklOR1MiLA0KICAgICAgICAgICAgICAgICJsaW5rUmVmTnVtYmVyIjogIlVCSTQ4NTk2NDUiLA0KICAgICAgICAgICAgICAgICJtYXNrZWRBY2NOdW1iZXIiOiAiVUJJODUyMTc4ODEyIg0KICAgICAgICAgICAgfQ0KICAgICAgICBdLA0KICAgICAgICAiUHVycG9zZSI6IHsNCiAgICAgICAgICAgICJjb2RlIjogIjEwMSIsDQogICAgICAgICAgICAicmVmVXJpIjogImh0dHBzOi8vYXBpLnJlYml0Lm9yZy5pbi9hYS9wdXJwb3NlLzEwMS54bWwiLA0KICAgICAgICAgICAgInRleHQiOiAiV2VhbHRoIG1hbmFnZW1lbnQgc2VydmljZSIsDQogICAgICAgICAgICAiQ2F0ZWdvcnkiOiB7DQogICAgICAgICAgICAgICAgInR5cGUiOiAicHVycG9zZUNhdGVnb3J5VHlwZSINCiAgICAgICAgICAgIH0NCiAgICAgICAgfSwNCiAgICAgICAgIkZJRGF0YVJhbmdlIjogew0KICAgICAgICAgICAgImZyb20iOiAiMjAxOS0wNS0yOFQxMTozODoyMC4zODMrMDAwMCIsDQogICAgICAgICAgICAidG8iOiAiMjAyMC0wNS0yOFQxMTozODoyMC4zODErMDAwMCINCiAgICAgICAgfSwNCiAgICAgICAgIkRhdGFMaWZlIjogew0KICAgICAgICAgICAgInVuaXQiOiAiTU9OVEgiLA0KICAgICAgICAgICAgInZhbHVlIjogNA0KICAgICAgICB9LA0KICAgICAgICAiRnJlcXVlbmN5Ijogew0KICAgICAgICAgICAgInVuaXQiOiAiSE9VUiIsDQogICAgICAgICAgICAidmFsdWUiOiA0DQogICAgICAgIH0sDQogICAgICAgICJEYXRhRmlsdGVyIjogWw0KICAgICAgICAgICAgew0KICAgICAgICAgICAgICAgICJ0eXBlIjogIlRSQU5TQUNUSU9OQU1PVU5UIiwNCiAgICAgICAgICAgICAgICAib3BlcmF0b3IiOiAiPiIsDQogICAgICAgICAgICAgICAgInZhbHVlIjogIjIwMDAwIg0KICAgICAgICAgICAgfQ0KICAgICAgICBdDQogICAgfQ.O3KPh-eTpW2w47QXYidOBe1Hk2y7djVAEcOnZyRRvxQ3cY18-9ZWiodF16jff-e7yNQgsYZpAy95Fx2Fft8LoYugkYh9_6qHiG_7LCtW8Ng4nCMgZM3Wwsj11ks1msrK5C1ksPrGlTkFhm9-FufNkPTAlW76_5Sb8G_lOsIj1lB8TrvKpOvPlhEIgsS4WBNdPfv3SBqTV2suw2LvkX3QTilqwuMgXMkrm9-RYL90fweX_yyoyaBWHOJNQaKNuQWPpoRRNHGOx3v4_QiwgrELdfeTVtKn6R_AsfaBoEthQ3wrc8tY1q0Wx5j0x18NdU2R2C26dHyZ9M11dEH99psA1A
+      ConsentUse:
+        type: object
+        description: Section defining the parameters for consent tracking
+        required:
+          - logUri
+          - count
+          - lastUseDateTime
+        properties:
+          logUri:
+            type: string
+            description: Logging; logUri can be any valid URI including an email address
+            xml:
+              attribute: true
+          count:
+            type: number
+            description: Number of times the consent has been used
+            example: 1
+            xml:
+              attribute: true
+          lastUseDateTime:
+            type: string
+            format: date-time
+            description: Consent Last Used Datetime
+            example: '2018-12-06T11:39:57.153Z'
+            xml:
+              attribute: true
+    xml:
+      name: ConsentArtefact
+      namespace: 'http://standards.rebit.org.in/aa'
+  KeyMaterial:
+    type: object
+    required:
+      - cryptoAlg
+      - Nonce
+    description: >-
+      Contains the cryptographic parameters that are required to perform
+      End-to-End encryption for sharing the financial information between the
+      producer and the consumer in a secure manner. Please refer this link for
+      more information: https://tools.ietf.org/html/rfc4492 
+    properties:
+      cryptoAlg:
+        type: string
+        xml:
+          attribute: true
+        example: ECDH
+        description: >-
+          The encryption algorithms supported by this service. Currently ECDH
+          is a crypto algorithm that is supported.
+      curve:
+        type: string
+        xml:
+          attribute: true
+        example: Curve25519
+        description: >-
+          Describes a secure elliptic curve standard that is used to perform
+          ECDH. Currently Curve25519 is supported
+      params:
+        type: string
+        xml:
+          attribute: true
+        description: ' Specifies the elliptic curve domain parameters associated with the ECDH public key. Use Key-Value pair separated by a semicolon. For example: hashing function, encoding techniques, ECDH public parameters etc.'
+      DHPublicKey:
+        type: object
+        required:
+          - expiry
+        description: >-
+          Contains the public information for perfomring the key exchange. For
+          example: Diffie–Hellman key exchange (DH)
+        properties:
+          expiry:
+            type: string
+            format: date-time
+            example: '2018-12-06T11:39:57.153Z'
+            description: Specify an expiry date of the public key.
+            xml:
+              attribute: true
+          Parameters:
+            type: string
+            description: >-
+              Defines the public paramters used to calculate session (data
+              encryption) key. For exapmle: Ephemeral public key
+          KeyValue:
+            type: string
+            description: Contains the value of emphemeral public key
+      Nonce:
+        type: string
+        description: >-
+          Nonce is a random string generated every time during
+          the publishing of Ephemeral public key to ensure that old
+          communications cannot be reused in replay attacks.
+          Unlike random numbers, random strings do not require byte ordering.
+          Hence session keys can be generated in a platform independent way.
+        example: 29512b70-ca84-46b5-9471-63765599cf15 
+    xml:
+      name: KeyMaterial
+  ConsentDetail:
+        type: object
+        description: >-
+          This Section defines the consent and should be digitally signed using the Json Web Signature method. CAN
+          NOT CHANGE after generation, for any change a new consent has to be
+          generated.
+        required:
+          - consentStart
+          - consentExpiry
+          - consentMode
+          - fetchType
+          - consentTypes
+          - fiTypes
+          - DataConsumer
+          - DataProvider
+          - Customer
+          - Purpose
+          - FIDataRange
+          - DataLife
+          - Frequency
+          - Accounts
+        properties:
+          consentStart:
+            type: string
+            format: date-time
+            example: '2019-12-06T11:39:57.153Z'
+            description: >-
+              Start date-time of the consent. This field would allow for
+              Post-Dated consent.
+            xml:
+              attribute: true
+          consentExpiry:
+            type: string
+            format: date-time
+            example: '2019-12-06T11:39:57.153Z'
+            description: Expiry date-time for the consent
+            xml:
+              attribute: true
+          consentMode:
+            type: string
+            description: Consent Mode as defined in the AA Technical Specification
+            enum:
+              - VIEW
+              - STORE
+              - QUERY
+              - STREAM
+            xml:
+              attribute: true
+          fetchType:
+            type: string
+            description: FI Fetch type. Could be ONETIME or PERIODIC
+            enum:
+              - ONETIME
+              - PERIODIC
+            xml:
+              attribute: true
+          consentTypes:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              enum:
+                - PROFILE
+                - SUMMARY
+                - TRANSACTIONS
+              example: PROFILE
+          fiTypes:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              description: >-
+                List of FITypes used in the Consent. FITypes names should be as
+                defined in the AA Technical Specification
+              example: DEPOSIT
+          DataConsumer:
+            type: object
+            description: >-
+              Dataconsumer ID. For a consent between FIP & AA, Dataconsumer
+              would be AA whereas for a consent between FIU/AA Application & AA,
+              Dataconsumer would be FIU/AA Application.
+            properties:
+              id:
+                type: string
+                description: DataConsumer ID
+                example: DC1
+                xml:
+                  attribute: true
+              type:
+                type: string
+                description: Type of DataConsumer
+                enum:
+                  - FIU
+                  - AA
+                example: AA
+          DataProvider:
+            type: object
+            description: >-
+              DataProvider ID. For a consent between FIP & AA, DataProvider
+              would be FIP whereas for a consent between FIU/AA Application &
+              AA, DataProvider would be AA.
+            properties:
+              id:
+                type: string
+                description: DataProvider ID
+                example: DP1
+                xml:
+                  attribute: true
+              type:
+                type: string
+                description: Type of DataConsumer
+                enum:
+                  - FIP
+                  - AA
+                example: FIP
+          Customer:
+            type: object
+            description: Address of the end customer
+            properties:
+              id:
+                type: string
+                description: Customer Address
+                example: customer_identifier@AA_identifier
+                xml:
+                  attribute: true
+          Accounts:
+            type: array
+            description: >-
+              List of accounts which the consent would fetch FI from. For a
+              consent between FIU & AA, this list could have accounts from
+              multiple FIP. For a consent between FIP & AA, only accounts from
+              particular FIP must be present in this section.
+            items:
+              type: object
+              properties:
+                fiType:
+                  type: string
+                  description: Type of Financial Information
+                  example: DEPOSIT
+                  xml:
+                    attribute: true
+                fipId:
+                  type: string
+                  description: FIP ID
+                  example: FIP1
+                  xml:
+                    attribute: true
+                accType:
+                  type: string
+                  description: Type of Account
+                  example: SAVINGS
+                  xml:
+                    attribute: true
+                linkRefNumber:
+                  type: string
+                  description: FIP's linkRefNumber as shared by the FIP after linking
+                  example: XXXX-XXXX-XXXX
+                  xml:
+                    attribute: true
+                maskedAccNumber:
+                  type: string
+                  description: Masked account number
+                  example: XXXXXXXX4020
+                  xml:
+                    attribute: true
+            xml:
+              name: Accounts
+          Purpose:
+            $ref: '#/definitions/Purpose'
+          FIDataRange:
+            description: Data Range (Datetime) for the Financial Information Requested
+            type: object
+            required:
+              - from
+              - to
+            properties:
+              from:
+                type: string
+                format: date-time
+                description: Start date for financial information
+                xml:
+                  attribute: true
+                example: '2017-07-13T11:33:34.509Z'
+              to:
+                type: string
+                format: date-time
+                description: End date for financial information
+                xml:
+                  attribute: true
+                example: '2018-07-13T11:33:34.509Z'
+          DataLife:
+            description: >-
+              Datalife defines for how long can the FIU/AA Application store the
+              data
+            type: object
+            required:
+              - unit
+              - value
+            properties:
+              unit:
+                type: string
+                description: A unit of how long consumer can store the data.
+                xml:
+                  attribute: true
+                enum:
+                  - DAY
+                  - MONTH
+                  - YEAR
+                  - INF
+              value:
+                type: number
+                description: 'Value for the Datalife Unit. If INF, value must be set to 0.'
+                xml:
+                  attribute: true
+          Frequency:
+            description: >-
+              Frequency of data request. Could be defined in
+              HOUR/DAY/MONTH/YEAR.
+            type: object
+            required:
+              - unit
+              - value
+            properties:
+              unit:
+                type: string
+                description: >-
+                  Define the frequency for repeating access of the financial
+                  information
+                enum:
+                  - HOUR
+                  - DAY
+                  - MONTH
+                  - YEAR
+                xml:
+                  attribute: true
+              value:
+                type: number
+                description: >-
+                  Define the value of unit on  how many can consumer can make a
+                  request within defined unit of frequency
+                xml:
+                  attribute: true
+            xml:
+              name: Frequency
+          DataFilter:
+            type: array
+            description: rules that will be utilized by FIP to filter the data
+            items:
+              type: object
+              required:
+                - type
+                - operator
+                - value
+              properties:
+                type:
+                  type: string
+                  description: The condition to filter the data on.
+                  enum:
+                    - TRANSACTIONTYPE
+                    - TRANSACTIONAMOUNT
+                  example: TRANSACTIONAMOUNT
+                  xml:
+                    attribute: true
+                operator:
+                  type: string
+                  description: Operator to filter data by.
+                  enum:
+                    - '='
+                    - '!='
+                    - '>'
+                    - '<'
+                    - '>='
+                    - '<='
+                  example: '>='
+                  xml:
+                    attribute: true
+                value:
+                  type: string
+                  description: Value to filter data
+                  example: 20000
+                  xml:
+                    attribute: true
+            xml:
+              name: DataFilter
+  ConsentStatusNotification:
+    description: ''
+    type: object
+    required:
+      - ver
+      - timestamp
+      - txnid
+      - Notifier
+      - ConsentStatusNotification
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: The version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        example: '2018-12-06T11:39:57.153Z'
+        description: Creation timestamp of the message which will be updated at each leg
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: >-
+          The unique transaction identifier used for providing an end to end
+          traceability. 
+        example: 0b811819-9044-4856-b0ee-8c88035f8858
+        xml:
+          attribute: true
+      Notifier:
+        type: object
+        description: Information about the notifier
+        required:
+          - type
+          - id
+        properties:
+          type:
+            type: string
+            description: ''
+            example: FIP
+            xml:
+              attribute: true
+          id:
+            type: string
+            description: >-
+              Value of the destination address for locating the resource to
+              maintain the logs
+            example: FIP-1
+            xml:
+              attribute: true
+      ConsentStatusNotification:
+        type: object
+        description: >-
+          Selects a type of  Data-flow events , Consent-flow events, and Account
+          discovery flow events
+        required:
+          - consentId
+          - consentStatus
+        properties:
+          consentId:
+            type: string
+            example: XXXX0-XXXX-XXXX
+            xml:
+              attribute: true
+          consentStatus:
+            type: string
+            enum:
+              - ACTIVE
+              - REVOKED
+              - PAUSED
+              - REJECTED
+            example: REJECTED
+            xml:
+              attribute: true
+        xml:
+          name: ConsentStatusNotification
+  FIStatusNotification:
+    description: ''
+    type: object
+    required:
+      - ver
+      - timestamp
+      - txnid
+      - Notifier
+      - FIStatusNotification
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: The version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        example: '2018-12-06T11:39:57.153Z'
+        description: Creation timestamp of the message which will be updated at each leg
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: >-
+          The unique transaction identifier used for providing an end to end
+          traceability. 
+        example: 0b811819-9044-4856-b0ee-8c88035f8858
+        xml:
+          attribute: true
+      Notifier:
+        type: object
+        description: Information about the notifier
+        required:
+          - type
+          - id
+        properties:
+          type:
+            type: string
+            description: ''
+            example: FIP
+            xml:
+              attribute: true
+          id:
+            type: string
+            description: >-
+              Value of the destination address for locating the resource to
+              maintain the logs
+            example: FIP-1
+            xml:
+              attribute: true
+      FIStatusNotification:
+        type: object
+        description: >-
+          Selects a type of  Data-flow events , Consent-flow events, and Account
+          discovery flow events
+        required:
+          - sessionId
+          - sessionStatus
+          - FIStatusResponse
+        properties:
+          sessionId:
+            type: string
+            example: XXXX0-XXXX-XXXX
+            xml:
+              attribute: true
+          sessionStatus:
+            type: string
+            example: ACTIVE
+            enum:
+              - ACTIVE
+              - COMPLETED
+              - EXPIRED
+              - FAILED
+          FIStatusResponse:
+            type: array
+            items:
+              type: object
+              required:
+                - fipID
+                - Accounts
+              properties:
+                fipID:
+                  type: string
+                  example: FIP-1
+                Accounts:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - linkRefNumber
+                      - FIStatus
+                      - description
+                    properties:
+                      linkRefNumber:
+                        type: string
+                        example: XXXX-XXXX-XXXX
+                      FIStatus:
+                        type: string
+                        enum:
+                          - READY
+                          - DENIED
+                          - PENDING
+                          - DELIVERED
+                          - TIMEOUT
+                        example: READY
+                        xml:
+                          attribute: true
+                      description:
+                        type: string
+                        example: ''
+  AccountLinkStatusNotification:
+    description: ''
+    type: object
+    required:
+      - ver
+      - timestamp
+      - txnid
+      - Notifier
+      - AccountLinkStatusNotification
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: The version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        example: '2018-12-06T11:39:57.153Z'
+        description: Creation timestamp of the message which will be updated at each leg
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: >-
+          The unique transaction identifier used for providing an end to end
+          traceability. 
+        example: 0b811819-9044-4856-b0ee-8c88035f8858
+        xml:
+          attribute: true
+      Notifier:
+        type: object
+        description: Information about the notifier
+        required:
+          - type
+          - id
+        properties:
+          type:
+            type: string
+            description: ''
+            example: FIP
+            xml:
+              attribute: true
+          id:
+            type: string
+            description: >-
+              Value of the destination address for locating the resource to
+              maintain the logs
+            example: FIP-1
+            xml:
+              attribute: true
+      AccountLinkStatusNotification:
+        type: object
+        description: >-
+          Selects a type of  Data-flow events , Consent-flow events, and Account
+          discovery flow events
+        required:
+          - accRefNumber
+          - customerAddress
+          - linkRefNumber
+          - linkStatus
+        properties:
+          accRefNumber:
+            type: string
+            example: XXXX0-XXXX-XXXX
+            xml:
+              attribute: true
+          customerAddress:
+            type: string
+            example: customer_identifier@aa_identifier
+          linkRefNumber:
+            type: string
+            example: XXXX-XXXX-XXXX
+          linkStatus:
+            type: string
+            enum:
+              - LINKED
+            example: LINKED
+            xml:
+              attribute: true
+        xml:
+          name: AccountLinkStatusNotification
+  Purpose:
+    description: Purpose of the consent defined in the AA Technical Specification
+    type: object
+    required:
+      - code
+    properties:
+      code:
+        type: string
+        description: 'Purpose Code as defined in the AA Technical Specification '
+        example: '101'
+        xml:
+          attribute: true
+      refUri:
+        type: string
+        description: URL where the purpose is further defined
+        example: 'https://api.rebit.org.in/aa/purpose/101.xml'
+        xml:
+          attribute: true
+      text:
+        type: string
+        description: Textual Description
+        example: Wealth management service
+        xml:
+          attribute: true
+      Category:
+        properties:
+          type:
+            type: string
+            description: Category name of the Purpose code
+            xml:
+              attribute: true
+  HeartbeatResponse:
+    type: object
+    required:
+      - ver
+      - timestamp
+      - Status
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: The version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        description: Creation timestamp of the message which will be updated at each leg
+        example: '2018-12-06T11:39:57.153Z'
+        xml:
+          attribute: true
+      Status:
+        type: string
+        description: 'Status of the AA Server '
+        enum:
+          - UP
+          - DOWN
+      Error:
+        $ref: '#/definitions/Error'
+    xml:
+      name: HeartbeatResponse
+      namespace: 'https://standards.rebit.org.in/aa'
+  FIFetchResponse:
+    type: object
+    required:
+      - ver
+      - timestamp
+      - txnid
+      - FI
+    properties:
+      ver:
+        type: string
+        example: '1.0'
+        description: The version of the API
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        example: '2018-12-06T11:39:57.153Z'
+        description: Creation timestamp of the message which will be updated at each leg
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: >-
+          The unique transaction identifier used for providing an end to end
+          traceability.
+        example: 3dd436f8-0747-4a8f-9001-375e419430be
+        xml:
+          attribute: true
+      FI:
+        type: array
+        description: >-
+          Contains the account-specific metadata with corresponding encrypted
+          data for accessing the finanical information
+        items:
+          type: object
+          required:
+            - fipID
+            - data
+            - KeyMaterial
+          properties:
+            fipID:
+              type: string
+              example: FIP-1
+            data:
+              type: array
+              items:
+                type: object
+                required:
+                  - linkRefNumber
+                  - maskedAccNumber
+                  - encryptedFI
+                properties:
+                  linkRefNumber:
+                    type: string
+                    example: XXXX-XXXX-XXXX
+                  maskedAccNumber:
+                    type: string
+                    example: XXXXXXXX4020
+                  encryptedFI:
+                    type: string
+                    format: binary
+                    description: >-
+                      Contains the encrypted financial information based on the
+                      key material defined corresponding to the user's Account
+            KeyMaterial:
+              $ref: '#/definitions/KeyMaterial'
+    xml:
+      name: FIFetchResponse
+      namespace: 'https://standards.rebit.org.in/aa'
+  ErrorResponse:
+    description: Generic Error Response. Specific Error Responses extend from this.
+    type: object
+    required:
+      - ver
+      - txnid
+      - timestamp
+      - errorCode
+      - errorMsg
+    properties:
+      ver:
+        type: string
+        description: API version.
+        example: '1.0'
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: Trnsaction id of the request. Must be same value as sent in the request
+        example: 0b811819-9044-4856-b0ee-8c88035f8858'
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        description: Response timestamp
+        xml:
+          attribute: true
+        example: '2017-07-13T11:33:34.509Z' 
+      errorCode:
+        type: string
+        description: Error code indicating the problem with the request
+        xml:
+          attribute: true
+      errorMsg:
+        type: string
+        description: Error message with additional details. Ensure no sensitive information is included in the error message.
+        example: Error code specific error message    
+  BadRequest:
+    description: Response to bad request.
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        type: string
+        description: Error code pertaining to the invalid request
+        enum:
+          - InvalidRequest
+          - InvalidURI
+          - InvalidSecurity
+          - SignatureDoesNotMatch
+        xml:
+          attribute: true
+  NotFound:
+    description: Requested resource was not found.
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        type: string
+        description: Indicates that the version ID specified in the request does not match an existing version
+        enum:
+          - NoSuchVersion
+        xml:
+          attribute: true
+  Conflict:
+    description: IdempotencyError When UUID/Id is not unique
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        description: IdempotencyError When UUID/Id is not unique
+        type: string
+        enum:
+          - IdempotencyError
+        xml:
+          attribute: true
+  PreconditionFailed:
+    description: At least one of the preconditions you specified did not hold
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - PreconditionFailed
+        xml:
+          attribute: true
+  InternalServerError:
+    description: Encountered an internal error. Please try again
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - InternalError
+        xml:
+          attribute: true
+  NotImplemented:
+    description: Trying to access an unimplemented feature/API. Required when we provide backward compatiable API.
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - NotImplemented
+        xml:
+          attribute: true
+  ServiceUnavailable:
+    description: Service is unavailable
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - ServiceUnavailable
+        xml:
+          attribute: true
+  BadRequestConsent:
+    description: Bad Request during Consent Request
+    allOf:
+      - $ref: '#/definitions/BadRequest'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - InvalidRequest
+          - InvalidURI
+          - InvalidSecurity
+          - SignatureDoesNotMatch
+          - InvalidCustomerAddress
+          - InvalidConsentPurpose
+        xml:
+          attribute: true
+  BadRequestConsentStatus:
+    description: Bad Request during Consent Request Status
+    allOf:
+      - $ref: '#/definitions/BadRequest'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - InvalidRequest
+          - InvalidURI
+          - InvalidSecurity
+          - SignatureDoesNotMatch
+          - InvalidConsentHandle
+        xml:
+          attribute: true
+  BadRequestConsentFetch:
+    description: Bad Request during Consent Fetch
+    allOf:
+      - $ref: '#/definitions/BadRequest'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - InvalidRequest
+          - InvalidURI
+          - InvalidSecurity
+          - SignatureDoesNotMatch
+          - InvalidConsentId
+        xml:
+          attribute: true
+  BadRequestFIRequest:
+    description: Bad Request during FIRequest
+    allOf:
+      - $ref: '#/definitions/BadRequest'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - InvalidRequest
+          - InvalidURI
+          - InvalidSecurity
+          - SignatureDoesNotMatch
+          - InvalidKey
+          - InvalidDateRange
+          - InvalidConsentId
+          - InvalidConsentStatus
+          - InvalidConsentDetail
+          - InvalidConsentUse
+        xml:
+          attribute: true
+  BadRequestFIFetch:
+    description: Bad Request during FI Fetch
+    allOf:
+      - $ref: '#/definitions/BadRequest'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - InvalidRequest
+          - InvalidURI
+          - InvalidSecurity
+          - SignatureDoesNotMatch
+          - InvalidFIPId
+          - InvalidKey
+          - InvalidDateRange
+          - InvalidSessionId
+          - InvalidConsentId
+          - InvalidConsentStatus
+          - InvalidConsentDetail
+          - InvalidConsentUse
+        xml:
+          attribute: true
+  ForbiddenFIFetch:
+    description: Forbidden Request during FI Fetch
+    properties:
+      ver:
+        type: string
+        description: API version.
+        example: '1.0'
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: Trnsaction id of the request. Must be same value as sent in the request
+        example: 0b811819-9044-4856-b0ee-8c88035f8858'
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        format: date-time
+        description: Response timestamp
+        xml:
+          attribute: true
+        example: '2017-07-13T11:33:34.509Z' 
+      errorCode:
+        type: string
+        enum:
+          - DataFetchRequestInProgress
+          - ConsentExpired
+          - ConsentRevoked
+          - ConsentPaused
+        xml:
+          attribute: true
+      errorMsg:
+        type: string
+        example: "Error code specific error message"
+  NotFoundFIFetch:
+    description: Not found error during FI Fetch
+    allOf:
+      - $ref: '#/definitions/NotFound'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - NoSuchVersion
+          - NoDataFound
+        xml:
+          attribute: true
+  DataGoneFIFetch:
+    description: Data no longer availble during FI Fetch
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - DataGone
+        xml:
+          attribute: true
+  NotificationResponse:
+    description: Success response for receiving notification
+    required:
+      - ver
+      - timestamp
+      - txnid
+      - response
+    properties:
+      ver:
+        type: string
+        description: The version of the API
+        example: '1.0'
+        xml:
+          attribute: true
+      timestamp:
+        type: string
+        description: Creation timestamp of the message which will be updated at each call
+        format: date-time
+        example: '2018-09-22T06:13:30.967+0000'
+        xml:
+          attribute: true
+      txnid:
+        type: string
+        description: >-
+          An unique transaction identifier used for providing an end to end
+          traceability.
+        example: f35761ac-4a18-11e8-96ff-0277a9fbfedc
+        xml:
+          attribute: true
+      response:
+        type: string
+        description: response description
+        example: OK
+    xml:
+      name: ConsentNotificationResponse
+      namespace: 'https://standards.rebit.org.in/aa'
+  BadRequestConsentNotification:
+    description: Bad Request during Consent Notification
+    allOf:
+      - $ref: '#/definitions/BadRequest'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - InvalidRequest
+          - InvalidURI
+          - InvalidSecurity
+          - SignatureDoesNotMatch
+          - InvalidNotifier
+        xml:
+          attribute: true
+  BadRequestFINotification:
+    description: Bad Request during Consent Notification
+    allOf:
+      - $ref: '#/definitions/BadRequest'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - InvalidRequest
+          - InvalidURI
+          - InvalidSecurity
+          - SignatureDoesNotMatch
+          - InvalidFIStatusNotification
+        xml:
+          attribute: true
+  UnauthorizedAccess:
+    description: Unauthorized Access
+    allOf:
+      - $ref: '#/definitions/ErrorResponse'
+    properties:
+      errorCode:
+        type: string
+        enum:
+          - Unauthorized
+        xml:
+          attribute: true
