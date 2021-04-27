@@ -8,7 +8,8 @@ jobs:
     steps:
      - name: Validate Specifications
        uses: mbowman100/swagger-validator-action@2.0
-       files: |
-        specs/aa.yaml
-        specs/fip.yaml
-        specs/fiu.yaml
+       with:
+        files: |
+          specs/aa.yaml
+          specs/fip.yaml
+          specs/fiu.yaml
