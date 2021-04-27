@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+     - uses: actions/checkout@v2
      - name: Validate Specifications
        uses: mbowman100/swagger-validator-action@2.0
        with:
