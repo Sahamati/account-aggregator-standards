@@ -1,17 +1,17 @@
-# Account Aggregator API Spec & Schemas
+# Account Aggregator Ecosystem: API Specs & FI Schemas
 
 ## Overview
 
 This repository contains:
 
-- OpenAPI specifications for Account Aggregator (`spec/aa.yaml`), **F**inancial **I**nformation **P**rovider (`spec/fip.yaml`) and **F**inancial **I**nformation **U**ser (`spec/fiu.yaml`).
+- OpenAPI specifications for Account Aggregator (`specs/aa.yaml`), **F**inancial **I**nformation **P**rovider (`specs/fip.yaml`) and **F**inancial **I**nformation **U**ser (`specs/fiu.yaml`).
 - Supported Financial Intrument type schemas (`schemas/**/*.xsd`).
 
-## Maintaining the API Specification
+## Maintaining the API Specifications
 
-### [Spec Folder](spec/)
+### [Specifications Folder](specs/)
 
-The [spec/](spec/) folder contains the OpenAPI specification files:
+The [specs/](specs/) folder contains the OpenAPI specification files:
 
 - **aa.yaml** - to define the Account Aggregator APIs
 - **fip.yaml** - defines the API specification for a FIP
