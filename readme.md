@@ -23,7 +23,7 @@ Update the specification in `spec/*.yaml` file(s) that contains your changes and
 When changes are done, create a Pull Request that contains all the files you modified. An automatic validation script will verify if the changes results in a valid OpenAPI specification.   
 Besides automated validation, a manual review will also be done and if found correct and valid by reviewers, the changes will be merged.
 
-## Maintaining the FI Types Schema(s)
+## Maintaining the FI Schemas
 
 ### [Schema Folder](schemas/)
 
