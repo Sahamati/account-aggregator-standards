@@ -33,7 +33,7 @@ FI schemas are contained in [schemas/](schemas/) folder. Sample directory organi
 - [schemas/credit_card/](schemas/credit_card/) - contains schema definition for **Credit Card** FI type
 - and so on
 
-### Submitting a FI type Schema Change
+### Submitting a FI Schema Change
 
 Update the schema definition file for one or more FI types which require changes.  
 Once changes are done, create a Pull Request that contains the required changes. 
