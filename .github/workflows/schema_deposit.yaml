@@ -2,7 +2,7 @@ name: deposit
 
 on: 
   push:
-    branches: [ master ]
+    branches: [ main ]
     # paths:
     #  - 'schemas/deposit/**'
     #  - utils/gh-actions/schemas-action-generator.sh

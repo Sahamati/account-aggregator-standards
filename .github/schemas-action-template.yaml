@@ -2,7 +2,7 @@ name: DIRECTORY
 
 on: 
   push:
-    branches: [ master ]
+    branches: [ main ]
     # paths:
     #  - 'schemas/DIRECTORY/**'
     #  - utils/gh-actions/schemas-action-generator.sh

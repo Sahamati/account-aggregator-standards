@@ -2,7 +2,7 @@ name: Validate API Specifications
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
       - 'specs/**'
   pull_request:
