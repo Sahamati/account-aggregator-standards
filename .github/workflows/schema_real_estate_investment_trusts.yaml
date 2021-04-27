@@ -3,9 +3,9 @@ name: real_estate_investment_trusts
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/real_estate_investment_trusts/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/real_estate_investment_trusts/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/real_estate_investment_trusts/**'

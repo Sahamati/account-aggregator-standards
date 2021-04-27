@@ -3,9 +3,9 @@ name: recurring_deposit
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/recurring_deposit/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/recurring_deposit/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/recurring_deposit/**'

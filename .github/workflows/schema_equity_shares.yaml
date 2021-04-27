@@ -3,9 +3,9 @@ name: equity_shares
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/equity_shares/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/equity_shares/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/equity_shares/**'

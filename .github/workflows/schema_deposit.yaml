@@ -3,9 +3,9 @@ name: deposit
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/deposit/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/deposit/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/deposit/**'

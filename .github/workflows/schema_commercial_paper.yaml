@@ -3,9 +3,9 @@ name: commercial_paper
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/commercial_paper/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/commercial_paper/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/commercial_paper/**'

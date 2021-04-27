@@ -3,9 +3,9 @@ name: systematic_investment_plan
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/systematic_investment_plan/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/systematic_investment_plan/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/systematic_investment_plan/**'

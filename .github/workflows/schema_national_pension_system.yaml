@@ -3,9 +3,9 @@ name: national_pension_system
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/national_pension_system/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/national_pension_system/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/national_pension_system/**'

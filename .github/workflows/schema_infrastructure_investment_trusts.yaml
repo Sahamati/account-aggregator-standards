@@ -3,9 +3,9 @@ name: infrastructure_investment_trusts
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/infrastructure_investment_trusts/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/infrastructure_investment_trusts/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/infrastructure_investment_trusts/**'

@@ -3,9 +3,9 @@ name: debentures
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/debentures/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/debentures/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/debentures/**'

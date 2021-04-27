@@ -3,9 +3,9 @@ name: alternative_investment_funds
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/alternative_investment_funds/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/alternative_investment_funds/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/alternative_investment_funds/**'

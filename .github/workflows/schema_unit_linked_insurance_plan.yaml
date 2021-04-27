@@ -3,9 +3,9 @@ name: unit_linked_insurance_plan
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/unit_linked_insurance_plan/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/unit_linked_insurance_plan/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/unit_linked_insurance_plan/**'

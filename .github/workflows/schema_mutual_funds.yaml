@@ -3,9 +3,9 @@ name: mutual_funds
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/mutual_funds/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/mutual_funds/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/mutual_funds/**'

@@ -3,9 +3,9 @@ name: government_securities
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/government_securities/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/government_securities/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/government_securities/**'

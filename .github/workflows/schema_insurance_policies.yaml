@@ -3,9 +3,9 @@ name: insurance_policies
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/insurance_policies/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/insurance_policies/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/insurance_policies/**'

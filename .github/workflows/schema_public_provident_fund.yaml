@@ -3,9 +3,9 @@ name: public_provident_fund
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/public_provident_fund/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/public_provident_fund/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/public_provident_fund/**'

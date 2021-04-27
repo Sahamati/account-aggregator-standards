@@ -3,9 +3,9 @@ name: DIRECTORY
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/DIRECTORY/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/DIRECTORY/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/DIRECTORY/**'

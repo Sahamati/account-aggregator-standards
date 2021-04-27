@@ -3,9 +3,9 @@ name: credit_card
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/credit_card/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/credit_card/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/credit_card/**'

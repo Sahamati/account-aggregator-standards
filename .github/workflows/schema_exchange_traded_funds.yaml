@@ -3,9 +3,9 @@ name: exchange_traded_funds
 on: 
   push:
     branches: [ main ]
-    # paths:
-    #  - 'schemas/exchange_traded_funds/**'
-    #  - utils/gh-actions/schemas-action-generator.sh
+    paths:
+      - 'schemas/exchange_traded_funds/**'
+      - utils/gh-actions/schemas-action-generator.sh
   pull_request:
     paths:
       - 'schemas/exchange_traded_funds/**'
