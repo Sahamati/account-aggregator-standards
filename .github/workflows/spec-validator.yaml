@@ -1,0 +1,14 @@
+on: push
+name: Validate API Specifications
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+     - name: Validate Specifications
+       uses: mbowman100/swagger-validator-action@2.0
+       files: |
+        specs/aa.yaml
+        specs/fip.yaml
+        specs/fiu.yaml
