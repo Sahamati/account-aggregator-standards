@@ -1,5 +1,13 @@
-on: push
 name: Validate API Specifications
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'specs/**'
+  pull_request:
+    paths:
+      - 'specs/**'
 
 jobs:
   validate:
