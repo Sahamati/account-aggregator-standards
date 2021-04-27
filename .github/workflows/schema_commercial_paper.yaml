@@ -1,0 +1,24 @@
+name: commercial_paper
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/commercial_paper/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/commercial_paper/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-commercial_paper:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/commercial_paper/CP.xml
+        xml-schema-file: ./schemas/commercial_paper/cp.xsd

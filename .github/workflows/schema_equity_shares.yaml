@@ -1,0 +1,24 @@
+name: equity_shares
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/equity_shares/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/equity_shares/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-equity_shares:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/equity_shares/Equities.xml
+        xml-schema-file: ./schemas/equity_shares/equities.xsd

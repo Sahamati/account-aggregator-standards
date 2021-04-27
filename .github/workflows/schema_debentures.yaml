@@ -1,0 +1,24 @@
+name: debentures
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/debentures/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/debentures/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-debentures:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/debentures/Debentures.xml
+        xml-schema-file: ./schemas/debentures/debentures.xsd

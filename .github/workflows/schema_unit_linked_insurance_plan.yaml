@@ -1,0 +1,24 @@
+name: unit_linked_insurance_plan
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/unit_linked_insurance_plan/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/unit_linked_insurance_plan/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-unit_linked_insurance_plan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/unit_linked_insurance_plan/ULIP.xml
+        xml-schema-file: ./schemas/unit_linked_insurance_plan/others_ulip.xsd

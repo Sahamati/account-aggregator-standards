@@ -1,0 +1,24 @@
+name: collective_investment_schemes
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/collective_investment_schemes/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/collective_investment_schemes/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-collective_investment_schemes:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/collective_investment_schemes/CIS.xml
+        xml-schema-file: ./schemas/collective_investment_schemes/cis.xsd

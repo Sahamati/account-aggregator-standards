@@ -1,0 +1,24 @@
+name: public_provident_fund
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/public_provident_fund/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/public_provident_fund/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-public_provident_fund:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/public_provident_fund/PPF.xml
+        xml-schema-file: ./schemas/public_provident_fund/others_ppf.xsd

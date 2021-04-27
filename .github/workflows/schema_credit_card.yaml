@@ -1,0 +1,24 @@
+name: credit_card
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/credit_card/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/credit_card/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-credit_card:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/credit_card/CreditCard.xml
+        xml-schema-file: ./schemas/credit_card/others_creditcard.xsd

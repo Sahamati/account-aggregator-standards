@@ -1,0 +1,24 @@
+name: indian_depository_receipts
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/indian_depository_receipts/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/indian_depository_receipts/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-indian_depository_receipts:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/indian_depository_receipts/IDR.xml
+        xml-schema-file: ./schemas/indian_depository_receipts/idr.xsd

@@ -1,0 +1,24 @@
+name: bonds
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/bonds/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/bonds/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-bonds:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/bonds/Bonds.xml
+        xml-schema-file: ./schemas/bonds/bonds.xsd

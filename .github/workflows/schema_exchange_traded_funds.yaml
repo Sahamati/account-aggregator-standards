@@ -1,0 +1,24 @@
+name: exchange_traded_funds
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/exchange_traded_funds/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/exchange_traded_funds/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-exchange_traded_funds:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/exchange_traded_funds/ETF.xml
+        xml-schema-file: ./schemas/exchange_traded_funds/etf.xsd

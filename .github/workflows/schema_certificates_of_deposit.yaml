@@ -1,0 +1,24 @@
+name: certificates_of_deposit
+
+on: 
+  push:
+    branches: [ main ]
+    # paths:
+    #  - 'schemas/certificates_of_deposit/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull_request:
+    paths:
+      - 'schemas/certificates_of_deposit/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-certificates_of_deposit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/certificates_of_deposit/CD.xml
+        xml-schema-file: ./schemas/certificates_of_deposit/cd.xsd
