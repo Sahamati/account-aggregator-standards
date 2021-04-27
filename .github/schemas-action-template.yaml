@@ -1,0 +1,24 @@
+name: DIRECTORY
+
+on: 
+  push:
+    branches: [ master ]
+    # paths:
+    #  - 'schemas/DIRECTORY/**'
+    #  - utils/gh-actions/schemas-action-generator.sh
+  pull-request:
+    paths:
+      - 'schemas/DIRECTORY/**'
+      - utils/gh-actions/schemas-action-generator.sh
+
+jobs:
+  lint-DIRECTORY:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: korelstar/xmllint-problem-matcher@v1
+    - name: Lint Schema & XML
+      uses: ChristophWurst/xmllint-action@v1
+      with:
+        xml-file: ./schemas/SCHEMAXML
+        xml-schema-file: ./schemas/SCHEMAXSD
