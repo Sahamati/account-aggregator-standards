@@ -2,11 +2,11 @@ name: Update schemas/readme
 
 on: 
   push:
-    branches: [ main, feature/schemas-readme ]
-    #paths:
-    #  - 'schemas/**'
-    #  - .github/schemas-readme.template
-    #  - utils/gh-actions/schemas-readme-updater.sh
+    branches: [ main ]
+    paths:
+      - 'schemas/**'
+      - .github/schemas-readme.template
+      - utils/gh-actions/schemas-readme-updater.sh
 
 jobs:
   update-readme:
