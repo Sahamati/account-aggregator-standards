@@ -1,0 +1,32 @@
+name: Update schemas/readme
+
+on: 
+  push:
+    branches: [ main ]
+    paths:
+      - 'schemas/**'
+      - .github/schemas-readme.template
+      - utils/gh-actions/schemas-readme-updater.sh
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run schemas/readme updater
+      run: ./utils/gh-actions/schemas-readme-updater.sh
+    - name: Import GPG key
+      id: import_gpg
+      uses: crazy-max/ghaction-import-gpg@v3
+      with:
+        gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+        passphrase: ${{ secrets.GPG_PASSPHRASE }}
+        git-user-signingkey: true
+        git-commit-gpgsign: true
+        # git-committer-name: defaults to name associated with GPG key
+        # git-committer-email: defaults to email associated with GPG key
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with: 
+        commit_message: "chore: update schemas/readme"
+        commit_user_name: Sahayak Bot # configured in GPG key
+        commit_user_email: sahayak@khardwal.com # configured in GPG key
