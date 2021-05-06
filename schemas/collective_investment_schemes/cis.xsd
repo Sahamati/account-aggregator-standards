@@ -204,7 +204,7 @@
       <xs:attribute name="executionDate" use="required" type="xs:date"/>
       <xs:attribute name="mode" use="required" type="aa:HoldingMode"/>
       <xs:attribute name="otherTaxes" use="optional" type="xs:float"/>
-      <xs:attribute name=" narration" use="optional" type="xs:string"/>
+      <xs:attribute name="narration" use="optional" type="xs:string"/>
      
 
     </xs:complexType>
