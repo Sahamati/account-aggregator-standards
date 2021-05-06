@@ -1,5 +1,7 @@
 # Account Aggregator Ecosystem - FI Schemas
 
+> This readme is auto-generated.
+
 | FI Type | Schema | Sample XML | Status
 | ------- | ------ | ---------- | ------
 Alternative Investment Funds | [aif.xsd](alternative_investment_funds/aif.xsd) | [AIF.xml](alternative_investment_funds/AIF.xml) | [![Alternative Investment Funds](https://github.com/Sahamati/account-aggregator-standards/actions/workflows/schema_alternative_investment_funds.yaml/badge.svg)](https://github.com/Sahamati/account-aggregator-standards/actions/workflows/schema_alternative_investment_funds.yaml)
