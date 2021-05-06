@@ -23,10 +23,10 @@ jobs:
         passphrase: ${{ secrets.GPG_PASSPHRASE }}
         git-user-signingkey: true
         git-commit-gpgsign: true
-        git-push-gpgsign: true
-        git-tag-gpgsign: true
         # git-committer-name: defaults to name associated with GPG key
         # git-committer-email: defaults to email associated with GPG key
     - uses: stefanzweifel/git-auto-commit-action@v4
       with: 
         commit_message: "chore: update schemas/readme"
+        commit_user_name: Sahayak Bot # configured in GPG key
+        commit_user_email: sahayak@khardwal.com # configured in GPG key
