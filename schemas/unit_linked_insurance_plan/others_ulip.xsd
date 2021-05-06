@@ -44,7 +44,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="  PremiumFrequencyType">
+  <xs:simpleType name="PremiumFrequencyType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="MONTHLY"/>
       <xs:enumeration value="QUARTERLY"/>
