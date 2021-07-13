@@ -124,7 +124,7 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="aa:Pending"/>
+        <xs:element ref="aa:Pending" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
       <xs:attribute name="currentBalance" use="required" type="xs:string">
         <xs:annotation>
@@ -141,7 +141,7 @@
           <xs:documentation xml:lang="en"> Currency conversion exchange rate for the day.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="balanceDateTime" use="required" type="xs:dateTimeStamp">
+      <xs:attribute name="balanceDateTime" use="required" type="xs:dateTime">
         <xs:annotation>
           <xs:documentation xml:lang="en"> Date and time stamp for which current balance recorded.</xs:documentation>
         </xs:annotation>
@@ -157,7 +157,7 @@
           <xs:documentation xml:lang="en">Location of branch where investment was made</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="facility" use="required" type="aa:SummaryFacility">
+      <xs:attribute name="facility" use="optional" type="aa:SummaryFacility">
         <xs:annotation>
           <xs:documentation> Additional facility like Overdraft or Sweep In applicable for the given account. </xs:documentation>
         </xs:annotation>
@@ -174,17 +174,17 @@
             in an ECS.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="openingDate" use="required" type="xs:string">
+      <xs:attribute name="openingDate" use="required" type="xs:date">
         <xs:annotation>
           <xs:documentation>Opening date of the deposit account</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="currentODLimit" use="required" type="xs:string">
+      <xs:attribute name="currentODLimit" use="optional" type="xs:string">
         <xs:annotation>
           <xs:documentation xml:lang="en">The portion of the sanctioned limit that is available to be drawn, as of this point in time</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="drawingLimit" use="required" type="xs:string">
+      <xs:attribute name="drawingLimit" use="optional" type="xs:string">
         <xs:annotation>
           <xs:documentation xml:lang="en"> Sanctioned limit (overall limit given by the bank, on the OD/CC facility). </xs:documentation>
         </xs:annotation>
@@ -202,7 +202,7 @@
   <xs:element name="Holders">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="aa:Holder"/>
+        <xs:element ref="aa:Holder" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="type" use="required" type="aa:HoldersType">
         <xs:annotation>
@@ -236,7 +236,7 @@
           <xs:documentation xml:lang="en"> Status of nominee registred with the account.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="landline" type="xs:string">
+      <xs:attribute name="landline" use="optional" type="xs:string">
         <xs:annotation>
           <xs:documentation xml:lang="en"> Landline number of account holder.</xs:documentation>
         </xs:annotation>
@@ -246,17 +246,17 @@
           <xs:documentation xml:lang="en">  Address of account holder.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+      <xs:attribute name="email" use="optional" type="aa:HolderEmail">
         <xs:annotation>
           <xs:documentation xml:lang="en"> Email ID of primary account holder.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+      <xs:attribute name="pan" use="optional" type="aa:HolderPan">
         <xs:annotation>
           <xs:documentation xml:lang="en"> PAN number of primary account holder.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+      <xs:attribute name="ckycCompliance" use="optional" type="xs:boolean">
         <xs:annotation>
           <xs:documentation xml:lang="en"> KYC status whether its completed or pending </xs:documentation>
         </xs:annotation>
@@ -269,7 +269,7 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="aa:Transaction"/>
+        <xs:element ref="aa:Transaction" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="startDate" use="required" type="xs:date">
         <xs:annotation>
@@ -305,7 +305,7 @@
           <xs:documentation xml:lang="en">Available balance.</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="transactionTimestamp" use="required" type="xs:dateTimeStamp">
+      <xs:attribute name="transactionTimestamp" use="required" type="xs:dateTime">
         <xs:annotation>
           <xs:documentation xml:lang="en">Transaction date time stamp for particular record when transaction taken place</xs:documentation>
         </xs:annotation>

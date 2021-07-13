@@ -89,9 +89,9 @@
   <xs:element name="Account">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="aa:Profile" minOccurs="0"/>
-        <xs:element ref="aa:Summary" minOccurs="0"/>
-        <xs:element ref="aa:Transactions"/>
+        <xs:element ref="aa:Profile" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Summary" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="aa:Transactions" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
       <xs:attribute name="type" use="required" type="xs:NCName" fixed="recurring_deposit"/>
       <xs:attribute name="maskedAccNumber" type="xs:string" use="required"/>
@@ -125,7 +125,7 @@
           <xs:documentation xml:lang="en">Location of branch where investment was made</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="openingDate" type="xs:string" use="required">
+      <xs:attribute name="openingDate" type="xs:date" use="required">
         <xs:annotation>
           <xs:documentation>Opening date of the deposit account</xs:documentation>
         </xs:annotation>
@@ -225,7 +225,7 @@
   <xs:element name="Holders">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="aa:Holder"/>
+        <xs:element ref="aa:Holder" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="type" use="required" type="aa:HoldersType">
         <xs:annotation>
@@ -256,7 +256,7 @@
           <xs:documentation> Name of nominee registered for the account </xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="landline" type="xs:string">
+      <xs:attribute name="landline" use="optional" type="xs:string">
         <xs:annotation>
           <xs:documentation> Landline number of account holder</xs:documentation>
         </xs:annotation>
@@ -266,17 +266,17 @@
           <xs:documentation> address of account holder</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="email" use="required" type="aa:HolderEmail">
+      <xs:attribute name="email" use="optional" type="aa:HolderEmail">
         <xs:annotation>
           <xs:documentation> Email ID of primary account holder </xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="pan" use="required" type="aa:HolderPan">
+      <xs:attribute name="pan" use="optional" type="aa:HolderPan">
         <xs:annotation>
           <xs:documentation> PAN number of primary account holder</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="ckycCompliance" use="required" type="xs:boolean">
+      <xs:attribute name="ckycCompliance" use="optional" type="xs:boolean">
         <xs:annotation>
           <xs:documentation> KYC status whether its completed or pending </xs:documentation>
         </xs:annotation>
@@ -291,7 +291,7 @@
     </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="aa:Transaction"/>
+        <xs:element ref="aa:Transaction" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="startDate" use="required" type="xs:date">
         <xs:annotation>
@@ -337,12 +337,12 @@
           <xs:documentation> Current value of investment</xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="transactionDateTime" type="xs:dateTimeStamp" use="required">
+      <xs:attribute name="transactionDateTime" type="xs:dateTime" use="required">
         <xs:annotation>
           <xs:documentation> Transaction date time stamp for particular record when investment taken place </xs:documentation>
         </xs:annotation>
       </xs:attribute>
-      <xs:attribute name="valueDate" type="xs:dateTimeStamp" use="required">
+      <xs:attribute name="valueDate" type="xs:date" use="required">
         <xs:annotation>
           <xs:documentation> Date when the transaction actually carries out. For example., cheque realization. </xs:documentation>
         </xs:annotation>
