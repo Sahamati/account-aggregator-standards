@@ -9,7 +9,7 @@
                 email="qw@gmail.com" pan="AAAPL1234C" ckycCompliance="true"/>
         </Holders>
     </Profile>
-    <Summary accountType="FIXED" openingDate="" branch="" ifsc="" maturityAmount="10.0"
+    <Summary accountType="FIXED" openingDate="2004-04-12" branch="" ifsc="" maturityAmount="10.0"
         maturityDate="2004-04-12" description="" interestPayout="HALF-YEARLY" interestRate=""
         principalAmount="" tenureDays="" tenureMonths="" tenureYears="" recurringAmount=""
         recurringDepositDay="" interestComputation="COMPOUND" compoundingFrequency="HALF-YEARLY"
@@ -18,7 +18,7 @@
 
     <Transactions startDate="2004-04-12" endDate="2004-04-12">
         <Transaction txnId="" amount="" narration="" type="TDS" mode="ATM" balance=""
-            transactionDateTime="2004-04-12T13:20:00-05:00" valueDate="2004-04-12T13:20:00-05:00"
+            transactionDateTime="2004-04-12T13:20:00-05:00" valueDate="2004-04-12"
             reference=""/>
     </Transactions>
 </Account>
