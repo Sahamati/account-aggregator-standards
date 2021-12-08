@@ -128,7 +128,7 @@
         <xs:attribute name="faceValue" use="required" type="xs:float"/>
         <xs:attribute name="symbol" use="required" type="xs:string"/>
         <xs:attribute name="issuerName" use="required" type="xs:string"/>
-        <xs:attribute name=" description" use="required" type="xs:string"/>
+        <xs:attribute name="description" use="required" type="xs:string"/>
         <xs:attribute name="issueDate" use="required" type="xs:date"/>
         <xs:attribute name="tenureYears" use="required" type="xs:positiveInteger"/>
         <xs:attribute name="tenureMonths" use="required" type="xs:string"/>
