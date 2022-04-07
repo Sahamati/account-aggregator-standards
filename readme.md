@@ -5,7 +5,7 @@
 This repository contains:
 
 - OpenAPI specifications for Account Aggregator (`specs/aa.yaml`), **F**inancial **I**nformation **P**rovider (`specs/fip.yaml`) and **F**inancial **I**nformation **U**ser (`specs/fiu.yaml`).
-- Supported Financial Intrument type schemas (`schemas/**/*.xsd`).
+- Supported Financial Instrument type schemas (`schemas/**/*.xsd`).
 
 ## Maintaining the API Specifications
 
