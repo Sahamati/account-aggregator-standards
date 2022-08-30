@@ -14,7 +14,7 @@
       <xs:enumeration value="WHOLE_LIFE"/>
       <xs:enumeration value="CHILDREN_PLAN"/>
       <xs:enumeration value="LOAN_COVER_TERM"/>
-      <xs:enumeration value="comprehensive COMPREHENSIVE"/>
+      <xs:enumeration value="COMPREHENSIVE"/>
       <xs:enumeration value="THIRD_PARTY"/>
       <xs:enumeration value="OTHERS"/>
     </xs:restriction>
