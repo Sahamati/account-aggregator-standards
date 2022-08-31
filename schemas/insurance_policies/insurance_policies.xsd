@@ -95,7 +95,7 @@
       <xs:enumeration value="LATE_FEES"/>
       <xs:enumeration value="FINAL_SETTLEMENT"/>
       <xs:enumeration value="CLAIM"/>
-      <xs:enumeration value="Plan Change PLAN_CHANGE"/>
+      <xs:enumeration value="PLAN_CHANGE"/>
       <xs:enumeration value="INSURANCE_RENEWWAL"/>
       <xs:enumeration value="OTHERS"/>
 
