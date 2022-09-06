@@ -30,7 +30,7 @@
       <xs:enumeration value="ADDITIONAL-PAID-IN-CAPITAL"/>
       <xs:enumeration value="CONTRIBUTED-SURPLUS"/>
       <xs:enumeration value="RETAINED-EARNING"/>
-      <xs:enumeration value=" OTHERS"/>
+      <xs:enumeration value="OTHERS"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -42,7 +42,7 @@
       <xs:enumeration value="SPLIT"/>
       <xs:enumeration value="DIVIDEND"/>
       <xs:enumeration value="RIGHTS"/>
-      <xs:enumeration value=" OTHERS"/>
+      <xs:enumeration value="OTHERS"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -50,7 +50,7 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="BSE"/>
       <xs:enumeration value="NSE"/>
-      <xs:enumeration value=" OTHERS"/>
+      <xs:enumeration value="OTHERS"/>
     </xs:restriction>
   </xs:simpleType>
 
